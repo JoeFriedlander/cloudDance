@@ -15,8 +15,8 @@
 on: push
 
 env:
-  AZURE_WEBAPP_NAME: backend    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: ''      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_NAME: app.js    # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: '/backend'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '12.x'                # set this to the node version to use
 
 jobs:
@@ -29,6 +29,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ env.NODE_VERSION }}
+        app_location: "/backend"
     - name: npm install, build, and test
       run: |
         # Build and test the project, then
