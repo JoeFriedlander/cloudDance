@@ -36,6 +36,7 @@ jobs:
         pushd ./frontend
         npm install
         npm run build --if-present
+        ls -a
         popd
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
