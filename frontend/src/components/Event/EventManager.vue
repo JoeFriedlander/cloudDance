@@ -1,12 +1,11 @@
 <template>
   <div>
-    <div>Enter Event</div>
     <form @submit.prevent="CreateEvent">
       <label>
         Event Description:
         <input type="text" v-model="eventDescription" />
       </label>
-      <button type="submit" :disabled="!eventDescription">Submit</button>
+      <button type="submit" :disabled="!eventDescription">Add Event</button>
     </form>
     <br />
     <div>List Of Events:</div>
@@ -28,13 +27,12 @@ export default {
   data() {
     return {
       eventDescription: "",
-      eventList: [],
-      apiServer: "http://localhost:3000/"
+      eventList: []
     };
   },
   methods: {
     CreateEvent() {
-      fetch(this.apiServer + "api/createEvent", {
+      fetch(process.env.VUE_APP_APISERVER + "api/createEvent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -48,6 +46,43 @@ export default {
         .then(response => {
           this.eventList.push(response.eventDescription);
           this.eventDescription = "";
+        })
+        .catch(error => {
+          console.log("error: " + error);
+        });
+    }
+  }
+};
+</script>
+
+<script>
+export default {
+  name: "LoadCalendar",
+  data() {
+    return {
+      calendarID: ""
+    };
+  },
+  methods: {
+    loadCalendar() {
+      fetch(
+        process.env.VUE_APP_APISERVER +
+          "api/loadCalendar?calendarID=" +
+          this.calendarID,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      )
+        .then(response => response.json())
+        .then(response => {
+          console.log(response);
+          response
+            ? this.$emit("loadCalendarEmit", response)
+            : console.log("empty response");
+          this.calendarID = "";
         })
         .catch(error => {
           console.log("error: " + error);

@@ -5,10 +5,12 @@ node_modules
 /frontend/.DS_Store
 /frontend/node_modules
 /frontend/dist
+/frontend/.env
 
 /backend/.DS_Store
 /backend/node_modules
 /backend/dist
+/backend/.env
 
 # local env files
 .env.local

@@ -1,4 +1,6 @@
-const fs = require('fs');
+//Load environmental variables
+require('dotenv').config()
+
 // API Settings
 const express = require('express');
 const cors = require('cors')
@@ -11,19 +13,15 @@ app.use(bodyParser.json());
 // DB Settings
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'removed for security',
-  database : 'ubikalDB'
+  host     :  process.env.DB_HOST,
+  user     :  process.env.DB_USER,
+  password :  process.env.DB_PASSWORD,
+  database :  process.env.DB_DATABASE
 });
 connection.connect();
 
-//Stream to write calendars to file
-var calendarFileStream = fs.createWriteStream("calendars.txt", {flags:'a'});
-
 //API
-app.post('/api/createCalendar', (req, res, next) => {
-    console.log(req.body);
+app.post('/api/newCalendar', (req, res, next) => {
     let calendarID = createID();
     connection.query('INSERT INTO calendar (calendarID) VALUES (' + 
                         connection.escape(calendarID) + 
@@ -31,17 +29,32 @@ app.post('/api/createCalendar', (req, res, next) => {
         function (error, results, fields) {
         if (error) throw error;
     });
-    calendarFileStream.write(calendarID + '\r\n');
     res.send(calendarID);
 });
 
-app.get('/api/allCalendars', (req, res, next) => {
-    fs.readFile('./calendars.txt', 'utf8', function (err,data) {
-        if (err) {
-          return console.log(err);
+app.get('/api/calendarExists', (req, res, next) => {
+    connection.query('SELECT COUNT(*) FROM calendar WHERE calendarID =' + 
+                        connection.escape(req.query.calendarID),
+        function (error, results, fields) {
+        if (error) throw error;
+        try {
+            results = JSON.parse(JSON.stringify(results[0]["COUNT(*)"]));
         }
-        res.send(data.split('\r\n'));
-      });
+        catch {
+            console.log('error going from ' + req.query.calendarID + ' to ' + results[0])
+        }
+        results === 0 ? results = false : results = true;
+        res.send(results);
+    });
+});
+
+app.get('/api/loadEvents', (req, res, next) => {
+    connection.query('SELECT eventdescription, starttime, length FROM event WHERE calendarID =' + 
+                        connection.escape(req.query.calendarID),
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+    });
 });
 
 app.post('/api/createEvent', (req, res, next) => {
@@ -59,7 +72,6 @@ app.post('/api/createEvent', (req, res, next) => {
         function (error, results, fields) {
         if (error) throw error;
     });
-    calendarFileStream.write(calendarID + ' ' + eventDescription + '\r\n');
     res.send({"calendarID": calendarID, "eventDescription": eventDescription});
 });
 
