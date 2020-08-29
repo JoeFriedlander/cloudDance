@@ -33,12 +33,10 @@ jobs:
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
-        pushd ..
-        pushd /backend
+        pushd /home/runner/work/ubiKal/backend
         npm install
         npm run build --if-present
         npm run test --if-present
-        popd
         popd
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
