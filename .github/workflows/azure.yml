@@ -33,7 +33,7 @@ jobs:
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
-        pushd /home/runner/work/ubiKal/backend
+        pushd .
         npm install
         npm run build --if-present
         npm run test --if-present
