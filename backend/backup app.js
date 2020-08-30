@@ -3,6 +3,9 @@ process.on('uncaughtException', function(err) {
     console.log('Caught exception: ' + err);
   });
 
+//Load environmental variables
+require('dotenv').config()
+
 // API Settings
 const express = require('express');
 const cors = require('cors')
@@ -12,7 +15,15 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-
+// DB Settings
+var mysql      = require('mysql');
+var connection = mysql.createConnection({
+  host     :  process.env.DB_HOST,
+  user     :  process.env.DB_USER,
+  password :  process.env.DB_PASSWORD,
+  database :  process.env.DB_DATABASE
+});
+connection.connect();
 
 //API
 app.get('/api/test', (req, res, next) => {
