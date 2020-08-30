@@ -1,8 +1,3 @@
-//testing unhandled exception log for troubleshooting
-process.on('uncaughtException', function(err) {
-    console.log('Caught exception: ' + err);
-  });
-
 //Load environmental variables
 require('dotenv').config()
 
