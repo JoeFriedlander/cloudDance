@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "basic node",
   "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+  "scripts": {	
+    "start": "node app.js",
+    "startnodemon": "nodemon app.js"
   },
   "author": "joe",
   "license": "ISC",

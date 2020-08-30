@@ -60,8 +60,6 @@ export default {
     },
     //Returns true if calendarID has already been added.
     isCalendarIDUnique(calendarID) {
-      console.log("calendar id unique? " + calendarID);
-      console.log(!this.calendarIDs.includes(calendarID));
       return !this.calendarIDs.includes(calendarID);
     },
     removeCalendarID(calendarIDToRemove) {

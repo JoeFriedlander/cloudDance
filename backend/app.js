@@ -32,6 +32,17 @@ app.post('/api/newCalendar', (req, res, next) => {
     res.send(calendarID);
 });
 
+app.delete('/api/deleteCalendar', (req, res, next) => {
+    let calendarID = req.query.calendarID;
+    connection.query('DELETE FROM calendar WHERE calendarID =' + 
+                        connection.escape(calendarID),
+        function (error, results, fields) {
+        if (error) throw error;
+    });
+    //should inform if not exists?
+    res.send(calendarID + ' deleted');
+});
+
 app.get('/api/calendarExists', (req, res, next) => {
     connection.query('SELECT COUNT(*) FROM calendar WHERE calendarID =' + 
                         connection.escape(req.query.calendarID),

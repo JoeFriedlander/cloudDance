@@ -18,12 +18,7 @@
 <script>
 export default {
   name: "EventManager",
-  props: {
-    calendar: {
-      type: String,
-      required: true
-    }
-  },
+  props: ["calendarID"],
   data() {
     return {
       eventDescription: "",
@@ -50,20 +45,7 @@ export default {
         .catch(error => {
           console.log("error: " + error);
         });
-    }
-  }
-};
-</script>
-
-<script>
-export default {
-  name: "LoadCalendar",
-  data() {
-    return {
-      calendarID: ""
-    };
-  },
-  methods: {
+    },
     loadCalendar() {
       fetch(
         process.env.VUE_APP_APISERVER +
