@@ -1,5 +1,11 @@
 <template>
   <div>
+    <form @submit.prevent="testAPI">
+      <button type="submit">
+        Test API (see in console)
+      </button>
+    </form>
+    <br />
     <NewCalendar @newCalendarEmit="loadNewCalendarID"></NewCalendar>
     <br />
     <GetCalendar
@@ -72,6 +78,21 @@ export default {
     resetErrors() {
       this.errorNotFoundCalendarID = "";
       this.errorAlreadyAddedCalendarID = "";
+    },
+    testAPI() {
+      fetch(process.env.VUE_APP_APISERVER + "api/test", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => response.text())
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log("error: " + error);
+        });
     }
   },
   components: {

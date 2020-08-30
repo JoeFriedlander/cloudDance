@@ -21,6 +21,10 @@ var connection = mysql.createConnection({
 connection.connect();
 
 //API
+app.get('/api/test', (req, res, next) => {
+    res.send('test reached');
+});
+
 app.post('/api/newCalendar', (req, res, next) => {
     let calendarID = createID();
     connection.query('INSERT INTO calendar (calendarID) VALUES (' + 
