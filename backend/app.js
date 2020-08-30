@@ -3,6 +3,9 @@ process.on('uncaughtException', function(err) {
     console.log('Caught exception: ' + err);
   });
 
+//Load environmental variables
+require('dotenv').config()
+
 // API Settings
 const express = require('express');
 const cors = require('cors')
@@ -12,6 +15,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+// DB Settings
 
 
 //API
