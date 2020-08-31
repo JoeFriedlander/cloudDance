@@ -1,5 +1,6 @@
 <template>
   <div class="entireCalendar">
+    Calendar ID: {{ calendarID }}
     <form @submit.prevent="removeCalendar">
       <button type="submit">
         Remove Calendar From View
@@ -10,7 +11,6 @@
         Permanently Delete Calendar
       </button>
     </form>
-    Calendar ID: {{ calendarID }}
     <br />
     <EventManager :calendarID="calendarID"> </EventManager>
   </div>

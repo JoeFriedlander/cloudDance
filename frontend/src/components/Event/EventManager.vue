@@ -1,12 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="CreateEvent">
-      <label>
-        Event Description:
-        <input type="text" v-model="eventDescription" />
-      </label>
-      <button type="submit" :disabled="!eventDescription">Add Event</button>
-    </form>
+    <NewEvent :calendarID="calendarID" @newEventEmit="loadAllEvents"></NewEvent>
     <br />
     <div>List Of Events:</div>
     <div v-for="event in eventList" :key="event">
@@ -16,6 +10,8 @@
 </template>
 
 <script>
+import NewEvent from "@/components/Event/NewEvent.vue";
+
 export default {
   name: "EventManager",
   props: ["calendarID"],
@@ -26,27 +22,7 @@ export default {
     };
   },
   methods: {
-    CreateEvent() {
-      fetch(process.env.VUE_APP_APISERVER + "api/createEvent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          calendarID: this.$props.calendar,
-          eventDescription: this.eventDescription
-        })
-      })
-        .then(response => response.json())
-        .then(response => {
-          this.eventList.push(response.eventDescription);
-          this.eventDescription = "";
-        })
-        .catch(error => {
-          console.log("error: " + error);
-        });
-    },
-    loadCalendar() {
+    loadAllEvents() {
       fetch(
         process.env.VUE_APP_APISERVER +
           "api/loadCalendar?calendarID=" +
@@ -70,6 +46,9 @@ export default {
           console.log("error: " + error);
         });
     }
+  },
+  components: {
+    NewEvent
   }
 };
 </script>

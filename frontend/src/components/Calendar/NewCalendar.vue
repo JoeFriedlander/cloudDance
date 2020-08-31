@@ -10,9 +10,7 @@
 export default {
   name: "NewCalendar",
   data() {
-    return {
-      calendars: []
-    };
+    return {};
   },
   methods: {
     newCalendar() {

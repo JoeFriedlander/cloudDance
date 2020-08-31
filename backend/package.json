@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "basic node",
   "main": "app.js",
-  "scripts": {	
+  "scripts": {
     "start": "node app.js",
-    "startnodemon": "nodemon app.js"
+    "dev": "nodemon app.js"
   },
   "author": "joe",
   "license": "ISC",
@@ -17,8 +17,8 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mysql": "^2.18.1",
-    "pm2": "^4.4.1",
+    "helmet": "^4.1.0",
+    "pg": "^8.3.3",
     "uuid": "^8.3.0"
   }
 }
