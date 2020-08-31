@@ -60,5 +60,8 @@ export default {
   border: 1px solid black;
   padding: 5px;
   background-color: rgba(118, 182, 235, 0.329);
+  width: 50%;
+  margin: 0 auto;
+  text-align: left;
 }
 </style>

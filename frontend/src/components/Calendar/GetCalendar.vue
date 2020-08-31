@@ -2,11 +2,11 @@
   <div>
     <form @submit.prevent="loadCalendar">
       <label>
-        Calendar ID:
+        Get existing Calendar ID:
         <input type="text" v-model="calendarID" />
       </label>
       <button type="submit" :disabled="!calendarID">
-        Get Existing Calendar
+        Get Calendar
       </button>
     </form>
   </div>
@@ -33,12 +33,8 @@ export default {
           }
         }
       )
-        .then(response => response.text())
         .then(response => {
-          // change from string 'true' / 'false' to bool true / false
-          // eslint-disable-next-line prettier/prettier
-          response = (response === "true" ? true : false);
-          if (response === true) {
+          if (response.status === 200) {
             this.$emit("calendarIDFoundEmit", this.calendarID);
           } else {
             this.$emit("CalendarIDNotFoundEmit", this.calendarID);

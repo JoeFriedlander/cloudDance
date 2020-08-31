@@ -1,25 +1,22 @@
 <template>
   <div>
-    <form @submit.prevent="testAPI">
-      <button type="submit">
-        Test API (see in console)
-      </button>
-    </form>
-    <br />
-    <NewCalendar @newCalendarEmit="loadNewCalendarID"></NewCalendar>
-    <br />
-    <GetCalendar
-      @calendarIDFoundEmit="loadExistingCalendarID"
-      @CalendarIDNotFoundEmit="calendarIDNotFound"
-    ></GetCalendar>
-    <div v-if="errorNotFoundCalendarID">
-      Error: Calendar {{ errorNotFoundCalendarID }} not found
+    <div class="CalendarManagerControls">
+      <br />
+      <NewCalendar @newCalendarEmit="loadNewCalendarID"></NewCalendar>
+      <br />
+      <GetCalendar
+        @calendarIDFoundEmit="loadExistingCalendarID"
+        @CalendarIDNotFoundEmit="calendarIDNotFound"
+      ></GetCalendar>
+      <div v-if="errorNotFoundCalendarID">
+        Error: Calendar {{ errorNotFoundCalendarID }} not found
+      </div>
+      <div v-else-if="errorAlreadyAddedCalendarID">
+        Error: Calendar {{ errorAlreadyAddedCalendarID }} already loaded
+      </div>
+      <!-- linebreak so calendar error doesn't push everything else down. fix in css -->
+      <div v-else><br /></div>
     </div>
-    <div v-else-if="errorAlreadyAddedCalendarID">
-      Error: Calendar {{ errorAlreadyAddedCalendarID }} already loaded
-    </div>
-    <!-- linebreak so calendar error doesn't push everything else down. fix in css -->
-    <div v-else><br /></div>
     <ul>
       <div v-for="calendarID in calendarIDs" :key="calendarID">
         <Calendar
@@ -78,21 +75,6 @@ export default {
     resetErrors() {
       this.errorNotFoundCalendarID = "";
       this.errorAlreadyAddedCalendarID = "";
-    },
-    testAPI() {
-      fetch(process.env.VUE_APP_APISERVER + "api/test", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-        .then(response => response.text())
-        .then(response => {
-          console.log(response);
-        })
-        .catch(error => {
-          console.log("error: " + error);
-        });
     }
   },
   components: {
@@ -103,4 +85,13 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.CalendarManagerControls {
+  border: 1px solid black;
+  padding: 5px;
+  background-color: rgba(52, 199, 64, 0.116);
+  width: 30%;
+  margin: 0 auto;
+  text-align: left;
+}
+</style>

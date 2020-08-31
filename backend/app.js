@@ -3,13 +3,14 @@ require('dotenv').config()
 
 // DB Settings
 const { Pool } = require('pg')
-const pool = new Pool({
-    user: process.env.PGUSER,
-    host: process.env.PGHOST,
-    database: process.env.PGDATABASE,
-    password: process.env.PGPASSWORD,
-    port: process.env.PGPORT,
-  })
+const connectionString = process.env.DATABASE_URL;
+console.log(process.env.DATABASE_DOESNT_USE_SSL);
+if (process.env.DATABASE_DOESNT_USE_SSL) {
+    // If the DB doesn't use SSL, create the pool without referencing ssl
+    pool = new Pool({connectionString: connectionString})}
+else {
+    pool = new Pool({connectionString: connectionString, ssl: {rejectUnauthorized: false}})
+}
 
 // Server Settings
 const express = require('express');
@@ -34,9 +35,10 @@ app.post('/api/newCalendar', (req, res, next) => {
     pool
         .query('INSERT INTO calendar(calendarID) VALUES($1) RETURNING *', [calendarID])
         .then(pgresult => {
-            res.send(pgresult.rows[0].calendarid);
+            //If successful send the new calendar id
+            res.status(201).send(pgresult.rows[0].calendarid);
         })
-        .catch(e => {res.send(JSON.stringify('Error: could not create new calendar'))})
+        .catch(e => {res.status(400).end();})
 });
 
 app.delete('/api/deleteCalendar', (req, res, next) => {
@@ -44,12 +46,12 @@ app.delete('/api/deleteCalendar', (req, res, next) => {
     pool
         .query('DELETE FROM calendar WHERE calendarID = $1 RETURNING *', [calendarID])
         .then(pgresult => {
-            console.log(pgresult.rows[0])
-            //TODO should inform if not exists, check if return val is same as cal, check if error or already gone
-            res.send(true);
+            //If successful send OK, if not found send 404
+            pgresult.rows[0] ? res.status(200).end() : res.status(404).end()
+            res.status(200).end();
         })
         .catch(e => {console.error(e.stack);
-            res.send(JSON.stringify('Error: Could not delete ' + calendarID));}
+            res.status(400).end();}
         )
 });
 
@@ -59,10 +61,9 @@ app.get('/api/calendarExists', (req, res, next) => {
     pool
         .query('SELECT COUNT(*) FROM calendar WHERE calendarID = $1', [calendarID])
         .then(pgresult => {
-            (Number(pgresult.rows[0].count) === 0) ? result = false : result = true;
-            res.send(result);
+            (Number(pgresult.rows[0].count) === 0) ? res.status(404).end() : res.status(200).end();
         })
-        .catch(e => res.send(JSON.stringify('Error checking if calendar ' + calendarID + ' exists')))
+        .catch(e => res.status(400).end())
 });
 
 app.post('/api/newEvent', (req, res, next) => {
@@ -76,25 +77,25 @@ app.post('/api/newEvent', (req, res, next) => {
     .query('INSERT INTO event (calendarID, eventDescription, starttime, length) VALUES ($1, $2, $3, $4)', 
         [calendarID, eventDescription, starttime, length])
     .then(pgresult => {
-        res.send(true);
+        res.status(201).end();
     })
-    .catch(e => res.send(JSON.stringify('Error inserting event ' + eventDescription + ' for calendar ' + calendarID)))
+    .catch(e => res.status(400).end())
 });
 
 app.get('/api/getAllEvents', (req, res, next) => {
     let calendarID = req.query.calendarID;
+    //check if calendar exists first then send 404 if it doesn't. then do rest
     pool
         .query('SELECT eventdescription, starttime, length FROM event WHERE calendarID = $1', [calendarID])
         .then(pgresult => {
             console.log(pgresult);
             res.send(pgresult);
         })
-        .catch(e => res.send(JSON.stringify('Error loading events for ' + calendarID)))
+        .catch(e => res.status(400))
 });
 
 app.use('/', (req, res, next) => {
-    //always runs
-    res.send('ok main page');
+    res.status(404).end();
 });
 
 const PORT = process.env.PORT || 3000;
