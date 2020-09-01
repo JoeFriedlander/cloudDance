@@ -29,9 +29,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 //API
-app.get('/api/test', (req, res, next) => {
-    res.send(JSON.stringify('test succesfully reached api'));
-});
+//Fix server not supplying the access-control-allow-origin header, even though cors origin option is set.
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', process.env.ALLOWED_CORS_ORIGIN);
+    next();
+  });
 
 app.post('/api/newCalendar', (req, res, next) => {
     let calendarID = createID();
