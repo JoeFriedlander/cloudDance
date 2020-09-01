@@ -1,6 +1,6 @@
 //Load environmental variables
 require('dotenv').config()
-
+console.log(process.env)
 // DB Settings
 const { Pool } = require('pg')
 const connectionString = process.env.DATABASE_URL;
@@ -29,8 +29,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 //API
-
-
 app.post('/api/newCalendar', (req, res, next) => {
     let calendarID = createID();
     pool
