@@ -4,7 +4,6 @@ require('dotenv').config()
 // DB Settings
 const { Pool } = require('pg')
 const connectionString = process.env.DATABASE_URL;
-console.log(process.env.DATABASE_DOESNT_USE_SSL);
 if (process.env.DATABASE_DOESNT_USE_SSL) {
     // If the DB doesn't use SSL, create the pool without referencing ssl
     pool = new Pool({connectionString: connectionString})}
@@ -16,6 +15,9 @@ else {
 const express = require('express');
 const helmet = require("helmet");
 const cors = require('cors')
+const  corsOptions = {
+    origin: process.env.ALLOWED_CORS_ORIGIN,
+  }
 const bodyParser = require('body-parser');
 const createID = require('./createID.js')
 
