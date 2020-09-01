@@ -17,6 +17,7 @@ const helmet = require("helmet");
 const cors = require('cors')
 const corsOptions = {
     origin: process.env.ALLOWED_CORS_ORIGIN,
+    credentials: true
   }
 const bodyParser = require('body-parser');
 const createID = require('./createID.js')
