@@ -23,16 +23,16 @@ const createID = require('./createID.js')
 
 const app = express();
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 //API
-app.get('/api/test', cors(corsOptions), (req, res, next) => {
+app.get('/api/test', (req, res, next) => {
     res.send(JSON.stringify('test succesfully reached api'));
 });
 
-app.post('/api/newCalendar', cors(corsOptions), (req, res, next) => {
+app.post('/api/newCalendar', (req, res, next) => {
     let calendarID = createID();
     pool
         .query('INSERT INTO calendar(calendarID) VALUES($1) RETURNING *', [calendarID])
@@ -43,7 +43,7 @@ app.post('/api/newCalendar', cors(corsOptions), (req, res, next) => {
         .catch(e => {res.status(400).end();})
 });
 
-app.delete('/api/deleteCalendar', cors(corsOptions), (req, res, next) => {
+app.delete('/api/deleteCalendar', (req, res, next) => {
     let calendarID = req.query.calendarID;
     pool
         .query('DELETE FROM calendar WHERE calendarID = $1 RETURNING *', [calendarID])
@@ -57,7 +57,7 @@ app.delete('/api/deleteCalendar', cors(corsOptions), (req, res, next) => {
         )
 });
 
-app.get('/api/calendarExists', cors(corsOptions), (req, res, next) => {
+app.get('/api/calendarExists', (req, res, next) => {
     let calendarID = req.query.calendarID;
     let result = false;
     pool
@@ -68,7 +68,7 @@ app.get('/api/calendarExists', cors(corsOptions), (req, res, next) => {
         .catch(e => res.status(400).end())
 });
 
-app.post('/api/newEvent', cors(corsOptions), (req, res, next) => {
+app.post('/api/newEvent', (req, res, next) => {
     console.log(req.body);
     let calendarID = req.body.calendarID;
     let eventDescription = req.body.eventDescription;
@@ -84,7 +84,7 @@ app.post('/api/newEvent', cors(corsOptions), (req, res, next) => {
     .catch(e => res.status(400).end())
 });
 
-app.get('/api/getAllEvents', cors(corsOptions), (req, res, next) => {
+app.get('/api/getAllEvents', (req, res, next) => {
     let calendarID = req.query.calendarID;
     //check if calendar exists first then send 404 if it doesn't. then do rest
     pool
