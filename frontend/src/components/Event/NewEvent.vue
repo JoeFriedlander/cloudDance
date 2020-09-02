@@ -39,11 +39,17 @@ export default {
           length: this.length
         })
       })
-        .then(response => response.json())
         .then(response => {
-          console.log(response);
-          this.eventList.push(response.eventDescription);
-          this.eventDescription = "";
+          if (response.status === 201) {
+            response.text().then(response => {
+              this.$emit("newEventEmit", response);
+              this.eventDescription = "";
+              this.startTime = "";
+              this.length = "";
+            });
+          } else {
+            console.log("Could not create new event");
+          }
         })
         .catch(error => {
           console.log("error: " + error);

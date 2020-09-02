@@ -42,9 +42,12 @@ export default {
           }
         }
       )
-        .then(response => response.text())
         .then(response => {
-          this.removeCalendar(response);
+          if (response.status === 200) {
+            this.removeCalendar(this.calendarID);
+          } else {
+            console.log("error removing calendar");
+          }
         })
         .catch(error => {
           console.log("error: " + error);
@@ -59,7 +62,7 @@ export default {
 .entireCalendar {
   border: 1px solid black;
   padding: 5px;
-  background-color: rgba(118, 182, 235, 0.329);
+  background-color: rgba(199, 227, 245);
   width: 50%;
   margin: 0 auto;
   text-align: left;

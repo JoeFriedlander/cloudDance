@@ -1,15 +1,19 @@
 <template>
   <div>
-    <NewEvent :calendarID="calendarID" @newEventEmit="loadAllEvents"></NewEvent>
+    <NewEvent :calendarID="calendarID" @newEventEmit="loadNewEvent"></NewEvent>
     <br />
     <div>List Of Events:</div>
-    <div v-for="event in eventList" :key="event">
-      {{ event }}
+    <br />
+    <div v-for="eventID in eventIDs" :key="eventID">
+      <Event :eventID="eventID" @removeEventEmit="removeEventID"></Event>
+      <br />
     </div>
   </div>
 </template>
 
 <script>
+//When event manager is created it gets a list of all eventIDs
+import Event from "@/components/Event/Event.vue";
 import NewEvent from "@/components/Event/NewEvent.vue";
 
 export default {
@@ -18,14 +22,25 @@ export default {
   data() {
     return {
       eventDescription: "",
-      eventList: []
+      eventIDs: []
     };
   },
+  created: function() {
+    this.loadEventsFromCalendar();
+  },
   methods: {
-    loadAllEvents() {
+    loadNewEvent(eventID) {
+      this.eventIDs.push(eventID);
+    },
+    removeEventID(eventIDToRemove) {
+      this.eventIDs = this.eventIDs.filter(
+        eventID => eventID !== eventIDToRemove
+      );
+    },
+    loadEventsFromCalendar() {
       fetch(
         process.env.VUE_APP_APISERVER +
-          "api/loadCalendar?calendarID=" +
+          "api/loadEventsFromCalendar?calendarID=" +
           this.calendarID,
         {
           method: "GET",
@@ -34,13 +49,16 @@ export default {
           }
         }
       )
-        .then(response => response.json())
         .then(response => {
-          console.log(response);
-          response
-            ? this.$emit("loadCalendarEmit", response)
-            : console.log("empty response");
-          this.calendarID = "";
+          if (response.status === 200) {
+            response.json().then(response => {
+              for (let eventObject of response) {
+                this.loadNewEvent(eventObject.eventid);
+              }
+            });
+          } else {
+            console.log("error getting events from calendar");
+          }
         })
         .catch(error => {
           console.log("error: " + error);
@@ -48,6 +66,7 @@ export default {
     }
   },
   components: {
+    Event,
     NewEvent
   }
 };

@@ -20,9 +20,14 @@ export default {
           "Content-Type": "application/json"
         }
       })
-        .then(response => response.text())
         .then(response => {
-          this.$emit("newCalendarEmit", response);
+          if (response.status === 201) {
+            response
+              .text()
+              .then(response => this.$emit("newCalendarEmit", response));
+          } else {
+            console.log("Could not create new calendar");
+          }
         })
         .catch(error => {
           console.log("error: " + error);

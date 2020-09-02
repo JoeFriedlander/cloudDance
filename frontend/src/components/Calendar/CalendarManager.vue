@@ -89,7 +89,7 @@ export default {
 .CalendarManagerControls {
   border: 1px solid black;
   padding: 5px;
-  background-color: rgba(52, 199, 64, 0.116);
+  background-color: rgba(200, 229, 178);
   width: 30%;
   margin: 0 auto;
   text-align: left;
