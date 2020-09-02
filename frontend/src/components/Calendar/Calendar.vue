@@ -63,7 +63,8 @@ export default {
   border: 1px solid black;
   padding: 5px;
   background-color: rgba(199, 227, 245);
-  width: 50%;
+  width: auto;
+  display: table;
   margin: 0 auto;
   text-align: left;
 }

@@ -90,7 +90,8 @@ export default {
   border: 1px solid black;
   padding: 5px;
   background-color: rgba(200, 229, 178);
-  width: 30%;
+  width: auto;
+  display: table;
   margin: 0 auto;
   text-align: left;
 }
