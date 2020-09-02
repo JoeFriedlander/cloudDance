@@ -1,8 +1,8 @@
 <template>
   <div>
-    <form @submit.prevent="loadCalendar">
+    <form @submit.prevent="loadCalendar(calendarID)">
       <label>
-        Get existing Calendar ID:
+        Get existing Calendar:
         <input type="text" v-model="calendarID" />
       </label>
       <button type="submit" :disabled="!calendarID">
@@ -21,11 +21,11 @@ export default {
     };
   },
   methods: {
-    loadCalendar() {
+    loadCalendar(calendarID) {
       fetch(
         process.env.VUE_APP_APISERVER +
           "api/calendarExists?calendarID=" +
-          this.calendarID,
+          calendarID,
         {
           method: "GET",
           headers: {
@@ -35,9 +35,9 @@ export default {
       )
         .then(response => {
           if (response.status === 200) {
-            this.$emit("calendarIDFoundEmit", this.calendarID);
+            this.$emit("calendarIDFoundEmit", calendarID);
           } else {
-            this.$emit("CalendarIDNotFoundEmit", this.calendarID);
+            this.$emit("CalendarIDNotFoundEmit", calendarID);
           }
           this.calendarID = "";
         })

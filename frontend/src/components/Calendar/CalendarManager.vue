@@ -5,6 +5,7 @@
       <NewCalendar @newCalendarEmit="loadNewCalendarID"></NewCalendar>
       <br />
       <GetCalendar
+        ref="GetCalendar"
         @calendarIDFoundEmit="loadExistingCalendarID"
         @CalendarIDNotFoundEmit="calendarIDNotFound"
       ></GetCalendar>
@@ -36,6 +37,7 @@ import Calendar from "@/components/Calendar/Calendar.vue";
 
 export default {
   name: "CalendarManager",
+  props: ["possibleRouteCalendarID"],
   data() {
     return {
       calendarIDs: [],
@@ -43,12 +45,18 @@ export default {
       errorAlreadyAddedCalendarID: ""
     };
   },
+  //If there is a routeCalendarID, for example if user browses to ubikal.com/abc123 then try to get it (from GetCalendar component)
+  mounted() {
+    if (this.$route.params.routeCalendarID) {
+      this.$refs.GetCalendar.loadCalendar(this.$route.params.routeCalendarID);
+    }
+  },
   methods: {
     loadNewCalendarID(calendarID) {
       this.resetErrors();
       this.calendarIDs.push(calendarID);
     },
-    //Checks isCalendarIDUnique() before loading, so no duplicate calendars are viewed
+    //Checks isCalendarIDUnique() before loading, so no duplicate calendars are added
     loadExistingCalendarID(calendarID) {
       this.resetErrors();
       if (this.isCalendarIDUnique(calendarID)) {

@@ -1,6 +1,7 @@
 <template>
   <div class="entireCalendar">
-    Calendar ID: {{ calendarID }}
+    {{ calendarID }}
+    <button type="button" @click="doCopy">Copy Calendar ID</button>
     <form @submit.prevent="removeCalendar">
       <button type="submit">
         Remove Calendar From View
@@ -52,6 +53,18 @@ export default {
         .catch(error => {
           console.log("error: " + error);
         });
+    },
+    doCopy: function() {
+      this.$copyText(process.env.VUE_APP_WEBSERVER + this.calendarID).then(
+        function(e) {
+          //alert("Copied");
+          console.log(e);
+        },
+        function(e) {
+          alert("Can not copy");
+          console.log(e);
+        }
+      );
     }
   },
   components: { EventManager }
