@@ -46,8 +46,10 @@ export default {
         .then(response => {
           if (response.status === 200) {
             this.removeCalendar(this.calendarID);
+          } else if (response.status === 404) {
+            console.log("calender not found, may already be gone");
           } else {
-            console.log("error removing calendar");
+            console.log("error deleting calendar");
           }
         })
         .catch(error => {

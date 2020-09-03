@@ -49,6 +49,7 @@ export default {
   mounted() {
     if (this.$route.params.routeCalendarID) {
       this.$refs.GetCalendar.loadCalendar(this.$route.params.routeCalendarID);
+      this.$router.push({ name: "Home" });
     }
   },
   methods: {
