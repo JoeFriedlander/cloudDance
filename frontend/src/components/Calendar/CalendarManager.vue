@@ -97,12 +97,20 @@ export default {
 
 <style>
 .CalendarManagerControls {
-  border: 1px solid black;
-  padding: 5px;
-  background-color: rgba(200, 229, 178);
+  padding-top: 1vh;
+  padding-left: 1vw;
+  /* background-color: rgba(200, 229, 178); */
   width: auto;
-  display: table;
-  margin: 0 auto;
-  text-align: left;
+  text-align: center;
+}
+
+ul {
+  display: block;
+  list-style-type: disc;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 0;
 }
 </style>

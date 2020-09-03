@@ -55,7 +55,7 @@ export default {
         calendarID = calendarID.splice(-1, 1);
       }
       //If there is a slash / then find the last index of it, and everything after the slash is possibly the calendarID
-      let lastSlash = calendarID.lastIndexOf("/")
+      let lastSlash = calendarID.lastIndexOf("/");
       if (lastSlash !== -1) {
         calendarID = calendarID.substring(lastSlash + 1, calendarID.length);
       }

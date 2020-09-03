@@ -73,14 +73,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .entireCalendar {
-  border: 1px solid black;
-  padding: 5px;
+  padding-top: 1vh;
+  padding-left: 1vw;
+  padding-right: 1vw;
   background-color: rgba(199, 227, 245);
   width: auto;
-  display: table;
-  margin: 0 auto;
   text-align: left;
 }
 </style>

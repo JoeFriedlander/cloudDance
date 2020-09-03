@@ -1,12 +1,16 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div id="wrapper">
+      <div id="nav">
+        <router-link to="/">Home</router-link> |
+        <router-link to="/about">About</router-link>
+      </div>
+      <div id="innerApp">
+        <keep-alive>
+          <router-view />
+        </keep-alive>
+      </div>
     </div>
-    <keep-alive>
-      <router-view />
-    </keep-alive>
   </div>
 </template>
 
@@ -19,8 +23,17 @@
   color: #2c3e50;
 }
 
+#innerApp {
+  grid-area: innerApp;
+}
+
+.entireCalendar {
+  grid-area: entireCalendar;
+}
+
 #nav {
-  padding: 30px;
+  grid-area: nav;
+  padding: 4vh;
 }
 
 #nav a {
@@ -30,5 +43,23 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+#wrapper {
+  background-color: rgb(231, 231, 231);
+  display: grid;
+  grid-template-columns: 9fr 1fr;
+  grid-template-areas: 
+  "innerApp nav";
+  justify-items: center;
+}
+
+body,
+html {
+  background-color: rgb(194, 191, 191);
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
 }
 </style>
