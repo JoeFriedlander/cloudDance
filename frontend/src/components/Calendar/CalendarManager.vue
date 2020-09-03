@@ -54,7 +54,7 @@ export default {
   methods: {
     loadNewCalendarID(calendarID) {
       this.resetErrors();
-      this.calendarIDs.push(calendarID);
+      this.calendarIDs.push(calendarID.toString());
     },
     //Checks isCalendarIDUnique() before loading, so no duplicate calendars are added
     loadExistingCalendarID(calendarID) {
@@ -71,7 +71,8 @@ export default {
     },
     //Returns true if calendarID has already been added.
     isCalendarIDUnique(calendarID) {
-      return !this.calendarIDs.includes(calendarID);
+      calendarID = calendarID.toString();
+      return this.calendarIDs.indexOf(calendarID) === -1 ? true : false;
     },
     removeCalendarID(calendarIDToRemove) {
       this.resetErrors();

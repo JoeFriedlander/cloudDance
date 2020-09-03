@@ -117,7 +117,6 @@ app.delete('/api/deleteEvent', (req, res, next) => {
 
 app.get('/api/loadEventsFromCalendar', (req, res, next) => {
     let calendarID = req.query.calendarID;
-    //check if calendar exists first then send 404 if it doesn't. then do rest
     pool
         .query('SELECT eventID FROM event WHERE calendarID = $1', [calendarID])
         .then(pgresult => {

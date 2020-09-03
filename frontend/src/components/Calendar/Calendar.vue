@@ -56,9 +56,9 @@ export default {
     },
     doCopy: function() {
       this.$copyText(process.env.VUE_APP_WEBSERVER + this.calendarID).then(
-        function(e) {
+        function() {
           //alert("Copied");
-          console.log(e);
+          //console.log(e);
         },
         function(e) {
           alert("Can not copy");
