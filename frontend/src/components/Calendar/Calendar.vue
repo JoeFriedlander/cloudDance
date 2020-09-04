@@ -17,7 +17,7 @@
         {{ webserver + calendarID }}
       </span>
       <span v-show="!allowEditID && hoverCalendarID">
-        {{ webserver + calendarID }}
+        <mark>{{ webserver + calendarID }}</mark>
       </span>
       <v-card-actions>
         <v-container>

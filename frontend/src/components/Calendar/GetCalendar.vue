@@ -36,6 +36,11 @@ export default {
       calendarID: ""
     };
   },
+  mounted() {
+    calendarBus.$on("routeEmit", calendarAndEditID => {
+      this.loadCalendar(calendarAndEditID);
+    });
+  },
   methods: {
     //Reaches out to api to get an existing calendar and edit ID
     loadCalendar(input) {
