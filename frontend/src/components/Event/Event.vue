@@ -1,10 +1,12 @@
 <template>
   <div class="entireEvent">
-    <form @submit.prevent="deleteEvent">
-      <button type="submit">
-        Delete Event
-      </button>
-    </form>
+    <v-form @submit.prevent="deleteEvent">
+      <v-card-actions>
+        <v-btn @click="deleteEvent" class="elevation-5" color="success"
+          >Delete event</v-btn
+        >
+      </v-card-actions>
+    </v-form>
     Description: {{ eventDescription }} <br />
     Start Time: {{ startTime }} <br />
     Length: {{ length }} <br />

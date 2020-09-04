@@ -1,23 +1,21 @@
 <template>
   <div>
-    <div class="CalendarManagerControls">
-      <br />
-      <NewCalendar @newCalendarEmit="addCalendarIDtoArray"></NewCalendar>
-      <br />
-      <GetCalendar
-        ref="GetCalendar"
-        @calendarIDFoundEmit="addCalendarIDtoArray"
-        @CalendarIDNotFoundEmit="calendarIDNotFound"
-      ></GetCalendar>
-      <div v-if="errorNotFoundCalendarID">
-        Error: Calendar {{ errorNotFoundCalendarID }} not found
-      </div>
-      <div v-else-if="errorAlreadyAddedCalendarID">
-        Error: Calendar {{ errorAlreadyAddedCalendarID }} already loaded
-      </div>
-      <!-- linebreak so calendar error doesn't push everything else down. fix in css -->
-      <div v-else><br /></div>
-    </div>
+    <v-card class="mx-auto mt-5 elevation-6" width="30%">
+      <v-card-text>
+        <NewCalendar @newCalendarEmit="addCalendarIDtoArray"></NewCalendar>
+        <GetCalendar
+          ref="GetCalendar"
+          @calendarIDFoundEmit="addCalendarIDtoArray"
+          @CalendarIDNotFoundEmit="calendarIDNotFound"
+        ></GetCalendar>
+        <span v-if="errorNotFoundCalendarID">
+          Error: Calendar {{ errorNotFoundCalendarID }} not found
+        </span>
+        <span v-else-if="errorAlreadyAddedCalendarID">
+          Error: Calendar {{ errorAlreadyAddedCalendarID }} already loaded
+        </span>
+      </v-card-text>
+    </v-card>
     <ul>
       <div
         v-for="calendarAndEditID in calendarAndEditIDs"
@@ -28,7 +26,6 @@
           :allowEditID="calendarAndEditID.allowEditID"
           @removeCalendarEmit="removeCalendarAndEditID"
         ></Calendar>
-        <br />
       </div>
     </ul>
   </div>

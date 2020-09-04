@@ -1,14 +1,29 @@
 <template>
   <div>
-    <form @submit.prevent="loadCalendar(calendarID)">
-      <label>
-        Get existing Calendar:
-        <input type="text" v-model="calendarID" />
-      </label>
-      <button type="submit" :disabled="!calendarID">
-        Get Calendar
-      </button>
-    </form>
+    <v-form @submit.prevent="loadCalendar(calendarID)">
+      <v-container fluid>
+        <v-row justify="start">
+          <v-col cols="6">
+            <v-card-actions>
+              <v-btn
+                @click="loadCalendar(calendarID)"
+                :disabled="calendarID.toString().trim().length === 0"
+                class="elevation-5"
+                color="info"
+                >Get Calendar</v-btn
+              >
+            </v-card-actions>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field
+              v-model="calendarID"
+              label="Get existing calendar"
+              prepend-icon="mdi-table-arrow-down"
+            />
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-form>
   </div>
 </template>
 
@@ -66,10 +81,8 @@ export default {
       if (plusIndex !== -1) {
         calendarID = input.substring(0, plusIndex);
         allowEditID = input.substring(plusIndex + 1);
-        console.log({ calendarID: calendarID, allowEditID: allowEditID });
         return { calendarID: calendarID, allowEditID: allowEditID };
       }
-      console.log({ calendarID: calendarID, allowEditID: "" });
       return { calendarID: input, allowEditID: "" };
     }
   }

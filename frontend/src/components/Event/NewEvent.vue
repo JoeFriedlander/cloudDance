@@ -1,16 +1,19 @@
 <template>
   <div>
-    <form @submit.prevent="newEvent">
-      <label>
-        Event Description:
-        <input type="text" v-model="eventDescription" />
-        Start Time:
-        <input type="text" v-model="startTime" />
-        Length:
-        <input type="text" v-model="length" />
-      </label>
-      <button type="submit" :disabled="!eventDescription">Add Event</button>
-    </form>
+    <v-form @submit.prevent="newEvent">
+      <v-text-field v-model="eventDescription" label="Event Description" />
+      <v-text-field v-model="startTime" label="Start Time" />
+      <v-text-field v-model="length" label="Length" />
+      <v-card-actions>
+        <v-btn
+          @click="newEvent"
+          :disabled="eventDescription.toString().trim().length === 0"
+          class="elevation-5"
+          color="info"
+          >Add event</v-btn
+        >
+      </v-card-actions>
+    </v-form>
   </div>
 </template>
 

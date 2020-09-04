@@ -1,30 +1,30 @@
 <template>
-  <div class="entireCalendar">
-    <span v-if="allowEditID">{{
-      webserver + calendarID + "+" + allowEditID
-    }}</span>
-    <span v-else> {{ webserver + calendarID }} </span>
-    <div />
-    <button type="button" @click="doCopyCalendarID">Copy Read Only Link</button>
-    <span v-if="allowEditID">
-      <button type="button" @click="doCopyCalendarAndEditID">
-        Copy Read And Edit Link
-      </button>
-    </span>
-    <form @submit.prevent="removeCalendar">
-      <button type="submit">
-        Remove Calendar From View
-      </button>
-    </form>
-    <form @submit.prevent="deleteCalendar">
-      <button type="submit">
-        Permanently Delete Calendar
-      </button>
-    </form>
-    <br />
-    <EventManager :calendarID="calendarID" :allowEditID="allowEditID">
-    </EventManager>
-  </div>
+  <v-card class="mx-auto mt-5 elevation-6">
+    <v-card-text>
+      <span v-if="allowEditID">{{
+        webserver + calendarID + "+" + allowEditID
+      }}</span>
+      <span v-else> {{ webserver + calendarID }} </span>
+      <v-card-actions>
+        <v-form>
+          <v-btn @click="doCopyCalendarID" color="success">
+            Copy Read Only Link
+          </v-btn>
+          <v-btn @click="doCopyCalendarAndEditID" color="success">
+            Copy Read And Edit Link
+          </v-btn>
+          <v-btn @click="removeCalendar" color="success">
+            Remove Calendar From View
+          </v-btn>
+          <v-btn @click="deleteCalendar" color="success">
+            Permanently Delete Calendar
+          </v-btn>
+        </v-form>
+      </v-card-actions>
+      <EventManager :calendarID="calendarID" :allowEditID="allowEditID">
+      </EventManager>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

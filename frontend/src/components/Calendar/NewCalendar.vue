@@ -1,8 +1,10 @@
 <template>
   <div>
-    <form @submit.prevent="newCalendar">
-      <button type="submit">New Calendar</button>
-    </form>
+    <v-card-actions>
+      <v-form>
+        <v-btn @click="newCalendar" color="success">New Calendar</v-btn>
+      </v-form>
+    </v-card-actions>
   </div>
 </template>
 
