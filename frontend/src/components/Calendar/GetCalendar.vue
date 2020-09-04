@@ -2,23 +2,23 @@
   <div>
     <v-form @submit.prevent="loadCalendar(calendarID)">
       <v-container fluid>
-        <v-row justify="start">
-          <v-col cols="6">
+        <v-row>
+          <v-col>
             <v-card-actions>
               <v-btn
                 @click="loadCalendar(calendarID)"
                 :disabled="calendarID.toString().trim().length === 0"
-                class="elevation-5"
                 color="info"
-                >Get Calendar</v-btn
+                >GET ubiKal</v-btn
               >
             </v-card-actions>
           </v-col>
-          <v-col cols="6">
+          <v-col>
             <v-text-field
+              placeholder="ubiKal link"
               v-model="calendarID"
-              label="Get existing calendar"
-              prepend-icon="mdi-table-arrow-down"
+              prepend-inner-icon="mdi-table-arrow-down"
+              dense
             />
           </v-col>
         </v-row>
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { calendarBus } from "@/main";
 export default {
   name: "GetCalendar",
   data() {
@@ -36,6 +37,7 @@ export default {
     };
   },
   methods: {
+    //Reaches out to api to get an existing calendar and edit ID
     loadCalendar(input) {
       input = this.sanitizeCalendarID(input);
       fetch(
@@ -51,9 +53,9 @@ export default {
       )
         .then(response => {
           if (response.status === 200) {
-            this.$emit("calendarIDFoundEmit", input);
+            calendarBus.$emit("calendarIDFoundEmit", input);
           } else {
-            this.$emit("CalendarIDNotFoundEmit", input.calendarID);
+            calendarBus.$emit("CalendarIDNotFoundEmit", input.calendarID);
           }
           this.calendarID = "";
         })

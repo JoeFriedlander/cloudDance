@@ -8,7 +8,6 @@
         <v-btn
           @click="newEvent"
           :disabled="eventDescription.toString().trim().length === 0"
-          class="elevation-5"
           color="info"
           >Add event</v-btn
         >

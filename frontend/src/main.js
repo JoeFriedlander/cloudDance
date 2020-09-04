@@ -6,8 +6,9 @@ import VueClipboard from "vue-clipboard2";
 import vuetify from "./plugins/vuetify";
 
 Vue.use(VueClipboard);
-
 Vue.config.productionTip = false;
+
+export const calendarBus = new Vue();
 
 new Vue({
   router,

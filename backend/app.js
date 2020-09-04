@@ -31,8 +31,8 @@ app.use(bodyParser.json());
 //API
 //TODO CREATE HELPER FUNCTIONS calendarExists (check if calendar exists), authorize (authorize calendarID with allowEditID).
 app.post('/api/newCalendar', (req, res, next) => {
-    let calendarID = createID();
-    let allowEditID = createID();
+    let calendarID = 'ubik' + createID().substring(4);
+    let allowEditID = 'edit' + createID().substring(4)
     pool
         .query('INSERT INTO calendar(calendarID, allowEditID, dateTimeCreated) VALUES($1, $2, LOCALTIMESTAMP)', [calendarID, allowEditID])
         .then(pgresult => {

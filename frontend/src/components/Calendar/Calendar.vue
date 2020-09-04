@@ -1,25 +1,65 @@
 <template>
-  <v-card class="mx-auto mt-5 elevation-6">
+  <v-card class="mx-auto mt-5">
     <v-card-text>
-      <span v-if="allowEditID">{{
-        webserver + calendarID + "+" + allowEditID
-      }}</span>
-      <span v-else> {{ webserver + calendarID }} </span>
+      <span v-show="allowEditID && !hoverEditID && !hoverCalendarID">
+        {{ webserver + calendarID + "+" + allowEditID }}
+      </span>
+      <span v-show="allowEditID && hoverEditID && !hoverCalendarID">
+        <mark>{{ webserver + calendarID + "+" + allowEditID }}</mark>
+      </span>
+      <span v-show="allowEditID && !hoverEditID && hoverCalendarID">
+        <span
+          ><mark>{{ webserver + calendarID }}</mark></span
+        >
+        <span>{{ "+" + allowEditID }}</span>
+      </span>
+      <span v-show="!allowEditID && !hoverCalendarID">
+        {{ webserver + calendarID }}
+      </span>
+      <span v-show="!allowEditID && hoverCalendarID">
+        {{ webserver + calendarID }}
+      </span>
       <v-card-actions>
-        <v-form>
-          <v-btn @click="doCopyCalendarID" color="success">
-            Copy Read Only Link
-          </v-btn>
-          <v-btn @click="doCopyCalendarAndEditID" color="success">
-            Copy Read And Edit Link
-          </v-btn>
-          <v-btn @click="removeCalendar" color="success">
-            Remove Calendar From View
-          </v-btn>
-          <v-btn @click="deleteCalendar" color="success">
-            Permanently Delete Calendar
-          </v-btn>
-        </v-form>
+        <v-container>
+          <v-form>
+            <v-row>
+              <v-col cols="8">
+                <v-btn
+                  @click="doCopyCalendarID"
+                  v-on:mouseover="setHoverCalendarIDTrue"
+                  v-on:mouseleave="setHoverCalendarIDFalse"
+                  class="mr-10"
+                  color="info"
+                >
+                  <v-icon>mdi-table</v-icon>view only
+                </v-btn>
+                <v-btn
+                  @click="doCopyCalendarAndEditID"
+                  v-on:mouseover="setHoverEditIDTrue"
+                  v-on:mouseleave="setHoverEditIDFalse"
+                  class="mr-10"
+                  color="success"
+                  :disabled="!this.allowEditID"
+                >
+                  <v-icon>mdi-pencil</v-icon>full edit
+                </v-btn>
+              </v-col>
+              <v-spacer />
+              <v-col cols="4">
+                <v-btn @click="removeCalendar" class="mr-10">
+                  Hide
+                </v-btn>
+                <v-btn
+                  @click="deleteCalendar"
+                  class="mr-10"
+                  :disabled="!this.allowEditID"
+                >
+                  Delete </v-btn
+                >'
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-container>
       </v-card-actions>
       <EventManager :calendarID="calendarID" :allowEditID="allowEditID">
       </EventManager>
@@ -35,6 +75,8 @@ export default {
   props: ["calendarID", "allowEditID"],
   data() {
     return {
+      hoverCalendarID: false,
+      hoverEditID: false,
       //process.env.VUE_APP_WEBSERVER didnt work in template section so defined it here
       webserver: process.env.VUE_APP_WEBSERVER
     };
@@ -97,10 +139,26 @@ export default {
           console.log(e);
         }
       );
+    },
+    setHoverCalendarIDTrue: function() {
+      this.hoverCalendarID = true;
+    },
+    setHoverCalendarIDFalse: function() {
+      this.hoverCalendarID = false;
+    },
+    setHoverEditIDTrue: function() {
+      this.hoverEditID = true;
+    },
+    setHoverEditIDFalse: function() {
+      this.hoverEditID = false;
     }
   },
   components: { EventManager }
 };
 </script>
 
-<style></style>
+<style>
+mark {
+  background-color: #f8cc46;
+}
+</style>
