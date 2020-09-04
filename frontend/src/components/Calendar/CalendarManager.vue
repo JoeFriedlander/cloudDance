@@ -2,11 +2,11 @@
   <div>
     <div class="CalendarManagerControls">
       <br />
-      <NewCalendar @newCalendarEmit="loadNewCalendarID"></NewCalendar>
+      <NewCalendar @newCalendarEmit="addCalendarIDtoArray"></NewCalendar>
       <br />
       <GetCalendar
         ref="GetCalendar"
-        @calendarIDFoundEmit="loadExistingCalendarID"
+        @calendarIDFoundEmit="addCalendarIDtoArray"
         @CalendarIDNotFoundEmit="calendarIDNotFound"
       ></GetCalendar>
       <div v-if="errorNotFoundCalendarID">
@@ -19,10 +19,14 @@
       <div v-else><br /></div>
     </div>
     <ul>
-      <div v-for="calendarID in calendarIDs" :key="calendarID">
+      <div
+        v-for="calendarAndEditID in calendarAndEditIDs"
+        :key="calendarAndEditID.calendarID"
+      >
         <Calendar
-          :calendarID="calendarID"
-          @removeCalendarEmit="removeCalendarID"
+          :calendarID="calendarAndEditID.calendarID"
+          :allowEditID="calendarAndEditID.allowEditID"
+          @removeCalendarEmit="removeCalendarAndEditID"
         ></Calendar>
         <br />
       </div>
@@ -40,7 +44,9 @@ export default {
   props: ["possibleRouteCalendarID"],
   data() {
     return {
-      calendarIDs: [],
+      //Array of objects made up of calendarID and allowEditID.
+      calendarAndEditIDs: [],
+      //Error messages
       errorNotFoundCalendarID: "",
       errorAlreadyAddedCalendarID: ""
     };
@@ -53,18 +59,14 @@ export default {
     }
   },
   methods: {
-    loadNewCalendarID(calendarID) {
-      this.resetErrors();
-      this.calendarIDs.push(calendarID.toString());
-    },
     //Checks isCalendarIDUnique() before loading, so no duplicate calendars are added
-    loadExistingCalendarID(calendarID) {
+    addCalendarIDtoArray(calendarAndEditID) {
       this.resetErrors();
-      if (this.isCalendarIDUnique(calendarID)) {
+      if (this.isCalendarIDUnique(calendarAndEditID.calendarID)) {
         this.resetErrors();
-        this.calendarIDs.push(calendarID);
+        this.calendarAndEditIDs.push(calendarAndEditID);
       } else {
-        this.errorAlreadyAddedCalendarID = calendarID;
+        this.errorAlreadyAddedCalendarID = calendarAndEditID.calendarID;
       }
     },
     calendarIDNotFound(calendarID) {
@@ -73,12 +75,12 @@ export default {
     //Returns true if calendarID has already been added.
     isCalendarIDUnique(calendarID) {
       calendarID = calendarID.toString();
-      return this.calendarIDs.indexOf(calendarID) === -1 ? true : false;
+      return !this.calendarAndEditIDs.some(e => e.calendarID === calendarID);
     },
-    removeCalendarID(calendarIDToRemove) {
+    removeCalendarAndEditID(calendarIDToRemove) {
       this.resetErrors();
-      this.calendarIDs = this.calendarIDs.filter(
-        calendarID => calendarID !== calendarIDToRemove
+      this.calendarAndEditIDs = this.calendarAndEditIDs.filter(
+        e => e.calendarID !== calendarIDToRemove
       );
     },
     //Sets all calendar errors back to empty string
@@ -95,22 +97,4 @@ export default {
 };
 </script>
 
-<style>
-.CalendarManagerControls {
-  padding-top: 1vh;
-  padding-left: 1vw;
-  /* background-color: rgba(200, 229, 178); */
-  width: auto;
-  text-align: center;
-}
-
-ul {
-  display: block;
-  list-style-type: disc;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-  padding-inline-start: 0;
-}
-</style>
+<style></style>

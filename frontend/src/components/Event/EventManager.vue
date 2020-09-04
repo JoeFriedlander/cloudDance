@@ -18,7 +18,7 @@ import NewEvent from "@/components/Event/NewEvent.vue";
 
 export default {
   name: "EventManager",
-  props: ["calendarID"],
+  props: ["calendarID", "allowEditID"],
   data() {
     return {
       eventDescription: "",

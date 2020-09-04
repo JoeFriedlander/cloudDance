@@ -1,7 +1,16 @@
 <template>
   <div class="entireCalendar">
-    {{ calendarID }}
-    <button type="button" @click="doCopy">Copy Calendar ID</button>
+    <span v-if="allowEditID">{{
+      webserver + calendarID + "+" + allowEditID
+    }}</span>
+    <span v-else> {{ webserver + calendarID }} </span>
+    <div />
+    <button type="button" @click="doCopyCalendarID">Copy Read Only Link</button>
+    <span v-if="allowEditID">
+      <button type="button" @click="doCopyCalendarAndEditID">
+        Copy Read And Edit Link
+      </button>
+    </span>
     <form @submit.prevent="removeCalendar">
       <button type="submit">
         Remove Calendar From View
@@ -13,7 +22,8 @@
       </button>
     </form>
     <br />
-    <EventManager :calendarID="calendarID"> </EventManager>
+    <EventManager :calendarID="calendarID" :allowEditID="allowEditID">
+    </EventManager>
   </div>
 </template>
 
@@ -22,9 +32,12 @@ import EventManager from "@/components/Event/EventManager.vue";
 
 export default {
   name: "Calendar",
-  props: ["calendarID"],
+  props: ["calendarID", "allowEditID"],
   data() {
-    return {};
+    return {
+      //process.env.VUE_APP_WEBSERVER didnt work in template section so defined it here
+      webserver: process.env.VUE_APP_WEBSERVER
+    };
   },
   methods: {
     removeCalendar() {
@@ -40,7 +53,10 @@ export default {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json"
-          }
+          },
+          body: JSON.stringify({
+            allowEditID: this.allowEditID
+          })
         }
       )
         .then(response => {
@@ -56,8 +72,22 @@ export default {
           console.log("error: " + error);
         });
     },
-    doCopy: function() {
-      this.$copyText(process.env.VUE_APP_WEBSERVER + this.calendarID).then(
+    doCopyCalendarID: function() {
+      this.$copyText(this.webserver + this.calendarID).then(
+        function() {
+          //alert("Copied");
+          //console.log(e);
+        },
+        function(e) {
+          alert("Can not copy");
+          console.log(e);
+        }
+      );
+    },
+    doCopyCalendarAndEditID: function() {
+      this.$copyText(
+        this.webserver + this.calendarID + "+" + this.allowEditID
+      ).then(
         function() {
           //alert("Copied");
           //console.log(e);
@@ -73,13 +103,4 @@ export default {
 };
 </script>
 
-<style>
-.entireCalendar {
-  padding-top: 1vh;
-  padding-left: 1vw;
-  padding-right: 1vw;
-  background-color: rgba(199, 227, 245);
-  width: auto;
-  text-align: left;
-}
-</style>
+<style></style>

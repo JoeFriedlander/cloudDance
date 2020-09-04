@@ -64,7 +64,10 @@ export default {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json"
-          }
+          },
+          body: JSON.stringify({
+            allowEditID: this.$parent.allowEditID
+          })
         }
       )
         .then(response => {

@@ -21,12 +21,12 @@ export default {
     };
   },
   methods: {
-    loadCalendar(calendarID) {
-      calendarID = this.sanitizeCalendarID(calendarID);
+    loadCalendar(input) {
+      input = this.sanitizeCalendarID(input);
       fetch(
         process.env.VUE_APP_APISERVER +
           "api/calendarExists?calendarID=" +
-          calendarID,
+          input.calendarID,
         {
           method: "GET",
           headers: {
@@ -36,9 +36,9 @@ export default {
       )
         .then(response => {
           if (response.status === 200) {
-            this.$emit("calendarIDFoundEmit", calendarID);
+            this.$emit("calendarIDFoundEmit", input);
           } else {
-            this.$emit("CalendarIDNotFoundEmit", calendarID);
+            this.$emit("CalendarIDNotFoundEmit", input.calendarID);
           }
           this.calendarID = "";
         })
@@ -46,20 +46,31 @@ export default {
           console.log("error: " + error);
         });
     },
-    sanitizeCalendarID(calendarID) {
+    sanitizeCalendarID(input) {
+      let calendarID = "";
+      let allowEditID = "";
       //Checks if a url like ubikal.com/abc123 or https://www.ubikal.com/abc123 is used
       //In addition to supporting regular calendarIDs like abc123
-      calendarID = calendarID.toString().trim();
-      //remove trailing slash
-      if (calendarID[-1] === "/") {
-        calendarID = calendarID.splice(-1, 1);
+      input = input.toString().trim();
+      //remove trailing slash e.g https://www.ubikal.com/abc123/
+      if (input.slice(-1) === "/") {
+        input = input.slice(0, -1);
       }
-      //If there is a slash / then find the last index of it, and everything after the slash is possibly the calendarID
-      let lastSlash = calendarID.lastIndexOf("/");
-      if (lastSlash !== -1) {
-        calendarID = calendarID.substring(lastSlash + 1, calendarID.length);
+      //If there is a slash / then find the last index of it, and everything after the slash is possibly the calendarID + editID
+      let lastSlashIndex = input.lastIndexOf("/");
+      if (lastSlashIndex !== -1) {
+        input = input.substring(lastSlashIndex + 1, input.length);
       }
-      return calendarID;
+      //Check if there is an editID abc123+def321
+      let plusIndex = input.indexOf("+");
+      if (plusIndex !== -1) {
+        calendarID = input.substring(0, plusIndex);
+        allowEditID = input.substring(plusIndex + 1);
+        console.log({ calendarID: calendarID, allowEditID: allowEditID });
+        return { calendarID: calendarID, allowEditID: allowEditID };
+      }
+      console.log({ calendarID: calendarID, allowEditID: "" });
+      return { calendarID: input, allowEditID: "" };
     }
   }
 };

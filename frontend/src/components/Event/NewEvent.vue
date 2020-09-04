@@ -36,7 +36,8 @@ export default {
           calendarID: this.$props.calendarID,
           eventDescription: this.eventDescription,
           startTime: this.startTime,
-          length: this.length
+          length: this.length,
+          allowEditID: this.$parent.allowEditID
         })
       })
         .then(response => {

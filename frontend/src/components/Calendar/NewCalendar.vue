@@ -23,7 +23,7 @@ export default {
         .then(response => {
           if (response.status === 201) {
             response
-              .text()
+              .json()
               .then(response => this.$emit("newCalendarEmit", response));
           } else {
             console.log("Could not create new calendar");
