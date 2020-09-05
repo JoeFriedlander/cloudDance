@@ -20,46 +20,58 @@
         <mark>{{ webserver + calendarID }}</mark>
       </span>
       <v-card-actions>
-        <v-container>
-          <v-form>
-            <v-row>
-              <v-col cols="8">
-                <v-btn
-                  @click="doCopyCalendarID"
-                  v-on:mouseover="setHoverCalendarIDTrue"
-                  v-on:mouseleave="setHoverCalendarIDFalse"
-                  class="mr-10"
-                  color="info"
-                >
-                  <v-icon>mdi-table</v-icon>view only
-                </v-btn>
-                <v-btn
-                  @click="doCopyCalendarAndEditID"
-                  v-on:mouseover="setHoverEditIDTrue"
-                  v-on:mouseleave="setHoverEditIDFalse"
-                  class="mr-10"
-                  color="success"
-                  :disabled="!this.allowEditID"
-                >
-                  <v-icon>mdi-pencil</v-icon>full edit
-                </v-btn>
-              </v-col>
-              <v-spacer />
-              <v-col cols="4">
-                <v-btn @click="removeCalendar" class="mr-10">
-                  Hide
-                </v-btn>
-                <v-btn
-                  @click="deleteCalendar"
-                  class="mr-10"
-                  :disabled="!this.allowEditID"
-                >
-                  Delete </v-btn
-                >'
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-container>
+        <v-form>
+          <v-tooltip v-model="copiedTooltipCalendarID" top>
+            <template v-slot:activator="{ attrs }">
+              <v-btn
+                v-bind="attrs"
+                @click="
+                  () => {
+                    doCopyCalendarID();
+                    setCopiedTooltipCalendarIDTrue();
+                  }
+                "
+                v-on:mouseover="setHoverCalendarIDTrue"
+                v-on:mouseleave="setHoverCalendarIDFalse"
+                class="mr-10"
+                color="info"
+              >
+                <v-icon>mdi-table</v-icon>view only
+              </v-btn>
+            </template>
+            <span>copied</span>
+          </v-tooltip>
+
+          <v-tooltip v-model="copiedTooltipEditID" top>
+            <template v-slot:activator="{ attrs }">
+              <v-btn
+                v-bind="attrs"
+                @click="
+                  () => {
+                    doCopyCalendarAndEditID();
+                    setCopiedTooltipEditIDTrue();
+                  }
+                "
+                v-on:mouseover="setHoverEditIDTrue"
+                v-on:mouseleave="setHoverEditIDFalse"
+                class="mr-10"
+                color="success"
+                :disabled="!allowEditID"
+              >
+                <v-icon>mdi-pencil</v-icon>full edit
+              </v-btn>
+            </template>
+            <span>copied</span>
+          </v-tooltip>
+
+          <v-btn @click="removeCalendar" class="mr-10">
+            Hide
+          </v-btn>
+
+          <v-btn @click="deleteCalendar" class="mr-10" :disabled="!allowEditID">
+            Delete
+          </v-btn>
+        </v-form>
       </v-card-actions>
       <EventManager :calendarID="calendarID" :allowEditID="allowEditID">
       </EventManager>
@@ -75,8 +87,11 @@ export default {
   props: ["calendarID", "allowEditID"],
   data() {
     return {
+      show: false,
       hoverCalendarID: false,
       hoverEditID: false,
+      copiedTooltipCalendarID: false,
+      copiedTooltipEditID: false,
       //process.env.VUE_APP_WEBSERVER didnt work in template section so defined it here
       webserver: process.env.VUE_APP_WEBSERVER
     };
@@ -115,16 +130,7 @@ export default {
         });
     },
     doCopyCalendarID: function() {
-      this.$copyText(this.webserver + this.calendarID).then(
-        function() {
-          //alert("Copied");
-          //console.log(e);
-        },
-        function(e) {
-          alert("Can not copy");
-          console.log(e);
-        }
-      );
+      this.$copyText(this.webserver + this.calendarID);
     },
     doCopyCalendarAndEditID: function() {
       this.$copyText(
@@ -135,7 +141,7 @@ export default {
           //console.log(e);
         },
         function(e) {
-          alert("Can not copy");
+          //alert("Can not copy");
           console.log(e);
         }
       );
@@ -151,6 +157,20 @@ export default {
     },
     setHoverEditIDFalse: function() {
       this.hoverEditID = false;
+    },
+    setCopiedTooltipCalendarIDTrue: function() {
+      this.copiedTooltipCalendarID = true;
+      setTimeout(this.setCopiedTooltipCalendarIDFalse, 1000);
+    },
+    setCopiedTooltipCalendarIDFalse: function() {
+      this.copiedTooltipCalendarID = false;
+    },
+    setCopiedTooltipEditIDTrue: function() {
+      this.copiedTooltipEditID = true;
+      setTimeout(this.setCopiedTooltipEditIDFalse, 1000);
+    },
+    setCopiedTooltipEditIDFalse: function() {
+      this.copiedTooltipEditID = false;
     }
   },
   components: { EventManager }

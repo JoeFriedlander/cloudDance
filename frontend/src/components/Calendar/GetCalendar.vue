@@ -1,28 +1,19 @@
 <template>
   <div>
     <v-form @submit.prevent="loadCalendar(calendarID)">
-      <v-container fluid>
-        <v-row>
-          <v-col>
-            <v-card-actions>
-              <v-btn
-                @click="loadCalendar(calendarID)"
-                :disabled="calendarID.toString().trim().length === 0"
-                color="info"
-                >GET ubiKal</v-btn
-              >
-            </v-card-actions>
-          </v-col>
-          <v-col>
-            <v-text-field
-              placeholder="ubiKal link"
-              v-model="calendarID"
-              prepend-inner-icon="mdi-table-arrow-down"
-              dense
-            />
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-text-field
+        v-model="calendarID"
+        append-icon="mdi-download"
+        @click:append="loadCalendar(calendarID)"
+        placeholder="Get ubiKal"
+      />
+      <!--
+      <v-btn
+        @click="loadCalendar(calendarID)"
+        :disabled="calendarID.toString().trim().length === 0"
+        color="info"
+        >GET ubiKal</v-btn
+      > -->
     </v-form>
   </div>
 </template>

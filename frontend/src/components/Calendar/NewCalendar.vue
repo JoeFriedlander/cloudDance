@@ -1,18 +1,10 @@
 <template>
   <div>
-    <v-container fluid>
-      <v-row>
-        <v-col>
-          <v-card-actions>
-            <v-form>
-              <v-btn @click="newCalendar" class="elevation-2" color="success"
-                >NEW ubiKal</v-btn
-              >
-            </v-form>
-          </v-card-actions>
-        </v-col>
-      </v-row>
-    </v-container>
+    <v-form>
+      <v-btn @click="newCalendar" class="elevation-2" color="success"
+        >New ubiKal</v-btn
+      >
+    </v-form>
   </div>
 </template>
 

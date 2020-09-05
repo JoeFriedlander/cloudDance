@@ -1,18 +1,13 @@
 <template>
   <v-app>
     <v-app-bar app elevation="2">
-      <v-container fluid>
-        <v-row justify="center" align="center">
-          <v-toolbar-items>
-            <v-col>
-              <NewCalendar />
-            </v-col>
-            <v-col>
-              <GetCalendar />
-            </v-col>
-          </v-toolbar-items>
-        </v-row>
-      </v-container>
+      <v-spacer></v-spacer>
+      <NewCalendar class="mr-12" />
+      <GetCalendar class="mt-6" />
+      <v-spacer></v-spacer>
+      <a href="https://github.com/JoeFriedlander/ubiKal">
+        <img src="@/assets/GitHub-Mark-32px.png" class="mt-1" />
+      </a>
       <!-- <v-btn to="/">Home</v-btn>
       <v-btn to="/about">About</v-btn> -->
     </v-app-bar>
