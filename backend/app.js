@@ -16,7 +16,7 @@ const express = require('express');
 const helmet = require("helmet");
 const cors = require('cors')
 const corsOptions = {
-    origin: "*",
+    origin: process.env.WEBSERVER_URL,
     credentials: true
   }
 const bodyParser = require('body-parser');
@@ -24,9 +24,17 @@ const createID = require('./createID.js')
 
 const app = express();
 app.use(helmet());
-app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(cors(corsOptions));
+//sometimes cors doesn't work so including this
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', process.env.WEBSERVER_URL);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
 
 //API
 //TODO CREATE HELPER FUNCTIONS calendarExists (check if calendar exists), authorize (authorize calendarID with allowEditID).
