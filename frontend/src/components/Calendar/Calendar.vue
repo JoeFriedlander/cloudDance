@@ -1,81 +1,83 @@
 <template>
-  <v-card class="mx-auto mt-5">
-    <v-card-text>
-      <span v-show="allowEditID && !hoverEditID && !hoverCalendarID">
-        {{ webserver + calendarID + "+" + allowEditID }}
-      </span>
-      <span v-show="allowEditID && hoverEditID && !hoverCalendarID">
-        <mark>{{ webserver + calendarID + "+" + allowEditID }}</mark>
-      </span>
-      <span v-show="allowEditID && !hoverEditID && hoverCalendarID">
-        <span
-          ><mark>{{ webserver + calendarID }}</mark></span
-        >
-        <span>{{ "+" + allowEditID }}</span>
-      </span>
-      <span v-show="!allowEditID && !hoverCalendarID">
-        {{ webserver + calendarID }}
-      </span>
-      <span v-show="!allowEditID && hoverCalendarID">
-        <mark>{{ webserver + calendarID }}</mark>
-      </span>
-      <v-card-actions>
-        <v-form>
-          <v-tooltip v-model="copiedTooltipCalendarID" top>
-            <template v-slot:activator="{ attrs }">
-              <v-btn
-                v-bind="attrs"
-                @click="
-                  () => {
-                    doCopyCalendarID();
-                    setCopiedTooltipCalendarIDTrue();
-                  }
-                "
-                v-on:mouseover="setHoverCalendarIDTrue"
-                v-on:mouseleave="setHoverCalendarIDFalse"
-                class="mr-10"
-                color="info"
-              >
-                <v-icon>mdi-table</v-icon>view only
-              </v-btn>
-            </template>
-            <span>copied</span>
-          </v-tooltip>
-
-          <v-tooltip v-model="copiedTooltipEditID" top>
-            <template v-slot:activator="{ attrs }">
-              <v-btn
-                v-bind="attrs"
-                @click="
-                  () => {
-                    doCopyCalendarAndEditID();
-                    setCopiedTooltipEditIDTrue();
-                  }
-                "
-                v-on:mouseover="setHoverEditIDTrue"
-                v-on:mouseleave="setHoverEditIDFalse"
-                class="mr-10"
-                color="success"
-                :disabled="!allowEditID"
-              >
-                <v-icon>mdi-pencil</v-icon>full edit
-              </v-btn>
-            </template>
-            <span>copied</span>
-          </v-tooltip>
-
-          <v-btn @click="removeCalendar" class="mr-10">
-            Hide
+  <v-card class="mt-5" elevation="2">
+    <v-toolbar dense elevation="2" color="#e0e0e0">
+      <v-toolbar-title>
+        <span v-show="allowEditID && !hoverEditID && !hoverCalendarID">
+          {{ webserver + calendarID + "+" + allowEditID }}
+        </span>
+        <span v-show="allowEditID && hoverEditID && !hoverCalendarID">
+          <mark>{{ webserver + calendarID + "+" + allowEditID }}</mark>
+        </span>
+        <span v-show="allowEditID && !hoverEditID && hoverCalendarID">
+          <span
+            ><mark>{{ webserver + calendarID }}</mark></span
+          >
+          <span>{{ "+" + allowEditID }}</span>
+        </span>
+        <span v-show="!allowEditID && !hoverCalendarID">
+          {{ webserver + calendarID }}
+        </span>
+        <span v-show="!allowEditID && hoverCalendarID">
+          <mark>{{ webserver + calendarID }}</mark>
+        </span>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn v-show="!allowEditID" color="success" class="mr-8">
+        Warning: BASIC ubiKal detected - Click here to upgrade<v-icon class="ml-1 mr-n1">mdi-arrow-up-bold</v-icon>
+      </v-btn>
+      <v-tooltip v-model="copiedTooltipCalendarID" top>
+        <template v-slot:activator="{ attrs }">
+          <v-btn
+            v-bind="attrs"
+            @click="
+              () => {
+                doCopyCalendarID();
+                setCopiedTooltipCalendarIDTrue();
+              }
+            "
+            v-on:mouseover="setHoverCalendarIDTrue"
+            v-on:mouseleave="setHoverCalendarIDFalse"
+            class="mr-8"
+            color="info"
+          >
+            share view only<v-icon class="ml-1 mr-n1">mdi-table</v-icon>
           </v-btn>
+        </template>
+        <span>copied</span>
+      </v-tooltip>
 
-          <v-btn @click="deleteCalendar" class="mr-10" :disabled="!allowEditID">
-            Delete
+      <v-tooltip v-model="copiedTooltipEditID" top>
+        <template v-slot:activator="{ attrs }">
+          <v-btn
+            v-bind="attrs"
+            @click="
+              () => {
+                doCopyCalendarAndEditID();
+                setCopiedTooltipEditIDTrue();
+              }
+            "
+            v-on:mouseover="setHoverEditIDTrue"
+            v-on:mouseleave="setHoverEditIDFalse"
+            class="mr-8"
+            color="success"
+            :disabled="!allowEditID"
+          >
+            share full edit<v-icon class="ml-1 mr-n1">mdi-pencil</v-icon>
           </v-btn>
-        </v-form>
-      </v-card-actions>
-      <EventManager :calendarID="calendarID" :allowEditID="allowEditID">
-      </EventManager>
-    </v-card-text>
+        </template>
+        <span>copied</span>
+      </v-tooltip>
+
+      <v-btn @click="deleteCalendar" class="mr-8" :disabled="!allowEditID">
+        delete<v-icon class="ml-1 mr-n1">mdi-trash-can-outline</v-icon>
+      </v-btn>
+
+      <v-btn @click="removeCalendar" class="mr-n2">
+        close<v-icon class="ml-1 mr-n1">mdi-close</v-icon>
+      </v-btn>
+    </v-toolbar>
+    <EventManager :calendarID="calendarID" :allowEditID="allowEditID">
+    </EventManager>
   </v-card>
 </template>
 
@@ -177,8 +179,13 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 mark {
   background-color: #f8cc46;
 }
+/*@import url("https://fonts.googleapis.com/css2?family=Space+Mono&display=swap");
+.v-toolbar__title {
+  font-family: "Space Mono", monospace;
+  font-size: 1em;
+}*/
 </style>

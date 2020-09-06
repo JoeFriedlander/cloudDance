@@ -82,15 +82,29 @@ app.delete('/api/deleteCalendar', (req, res, next) => {
 
 app.get('/api/calendarExists', (req, res, next) => {
     let calendarID = req.query.calendarID;
+    let allowEditID = req.query.allowEditID;
     let result = false;
-    pool
-        .query('SELECT COUNT(*) FROM calendar WHERE calendarID = $1', [calendarID])
+    //check if only calendarID supplied
+    if(!allowEditID) {
+        pool
+            .query('SELECT COUNT(*) FROM calendar WHERE calendarID = $1', [calendarID])
+            .then(pgresult => {
+                (Number(pgresult.rows[0].count) === 0) ? res.status(404).end() : res.status(200).end();
+            })
+            .catch(e => {console.error(e.stack);
+                res.status(400).end();}
+            )
+        } else {
+        //check if both calendarID and allowEditID
+        pool
+        .query('SELECT COUNT(*) FROM calendar WHERE calendarID = $1 AND allowEditID = $2', [calendarID, allowEditID])
         .then(pgresult => {
             (Number(pgresult.rows[0].count) === 0) ? res.status(404).end() : res.status(200).end();
         })
         .catch(e => {console.error(e.stack);
             res.status(400).end();}
         )
+    }
 });
 
 app.post('/api/newEvent', (req, res, next) => {

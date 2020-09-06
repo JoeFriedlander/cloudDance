@@ -6,7 +6,7 @@
       <GetCalendar class="mt-6" />
       <v-spacer></v-spacer>
       <a href="https://github.com/JoeFriedlander/ubiKal">
-        <img src="@/assets/GitHub-Mark-32px.png" class="mt-1" />
+        <img src="@/assets/GitHub-Mark-32px.png" class="mt-2" />
       </a>
       <!-- <v-btn to="/">Home</v-btn>
       <v-btn to="/about">About</v-btn> -->

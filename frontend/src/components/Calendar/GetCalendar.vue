@@ -1,19 +1,18 @@
 <template>
   <div>
     <v-form @submit.prevent="loadCalendar(calendarID)">
-      <v-text-field
-        v-model="calendarID"
-        append-icon="mdi-download"
-        @click:append="loadCalendar(calendarID)"
-        placeholder="Get ubiKal"
-      />
-      <!--
-      <v-btn
-        @click="loadCalendar(calendarID)"
-        :disabled="calendarID.toString().trim().length === 0"
-        color="info"
-        >GET ubiKal</v-btn
-      > -->
+      <v-tooltip v-model="activeError" bottom>
+        <template v-slot:activator="{ attrs }">
+          <v-text-field
+            v-bind="attrs"
+            v-model="calendarID"
+            append-icon="mdi-download"
+            @click:append="loadCalendar(calendarID)"
+            placeholder="get ubiKal"
+          />
+        </template>
+        <span>{{ errorMessage }}</span>
+      </v-tooltip>
     </v-form>
   </div>
 </template>
@@ -24,22 +23,35 @@ export default {
   name: "GetCalendar",
   data() {
     return {
-      calendarID: ""
+      calendarID: "",
+      errorMessage: "",
+      //need a seperate bool so error message renders correctly with vuetify
+      activeError: false
     };
   },
   mounted() {
     calendarBus.$on("routeEmit", calendarAndEditID => {
       this.loadCalendar(calendarAndEditID);
     });
+    //listen for emits from calendar manager
+    calendarBus.$on("errorCalendarNotFoundEmit", calendarAndEditID => {
+      this.setErrorCalendarNotFoundTrue(calendarAndEditID);
+    });
+    calendarBus.$on("errorCalendarAlreadyLoadedEmit", calendarAndEditID => {
+      this.setErrorCalendarAlreadyLoadedTrue(calendarAndEditID);
+    });
   },
   methods: {
     //Reaches out to api to get an existing calendar and edit ID
+    //if input includes editID, also check that matches up
     loadCalendar(input) {
       input = this.sanitizeCalendarID(input);
       fetch(
         process.env.VUE_APP_APISERVER +
           "api/calendarExists?calendarID=" +
-          input.calendarID,
+          input.calendarID +
+          "&allowEditID=" +
+          input.allowEditID,
         {
           method: "GET",
           headers: {
@@ -51,7 +63,7 @@ export default {
           if (response.status === 200) {
             calendarBus.$emit("calendarIDFoundEmit", input);
           } else {
-            calendarBus.$emit("CalendarIDNotFoundEmit", input.calendarID);
+            calendarBus.$emit("calendarIDNotFoundEmit", input.calendarID);
           }
           this.calendarID = "";
         })
@@ -82,6 +94,22 @@ export default {
         return { calendarID: calendarID, allowEditID: allowEditID };
       }
       return { calendarID: input, allowEditID: "" };
+    },
+    setErrorCalendarNotFoundTrue: function() {
+      this.errorMessage = "error 82015: ubiKal not found";
+      this.activeError = true;
+      setTimeout(this.setErrorCalendarNotFoundFalse, 2500);
+    },
+    setErrorCalendarNotFoundFalse: function() {
+      this.activeError = false;
+    },
+    setErrorCalendarAlreadyLoadedTrue: function() {
+      this.errorMessage = "error 39148.2(b) : ubiKal already loaded";
+      this.activeError = true;
+      setTimeout(this.setErrorCalendarAlreadyLoadedFalse, 4000);
+    },
+    setErrorCalendarAlreadyLoadedFalse: function() {
+      this.activeError = false;
     }
   }
 };

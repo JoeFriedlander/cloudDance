@@ -2,7 +2,7 @@
   <div>
     <v-form>
       <v-btn @click="newCalendar" class="elevation-2" color="success"
-        >New ubiKal</v-btn
+        >new ubiKal<v-icon class="ml-2 mr-n2">mdi-plus-thick</v-icon></v-btn
       >
     </v-form>
   </div>
