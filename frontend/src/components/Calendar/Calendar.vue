@@ -22,9 +22,13 @@
         </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn v-show="!allowEditID" color="success" class="mr-8">
-        Warning: BASIC ubiKal detected - Click here to upgrade<v-icon class="ml-1 mr-n1">mdi-arrow-up-bold</v-icon>
-      </v-btn>
+      <!--
+      <v-btn v-show="!allowEditID" color="indigo" dark class="mr-8">
+        Warning: BASIC ubiKal detected - Click here to upgrade<v-icon
+          class="ml-1 mr-n1"
+          >mdi-arrow-up-bold</v-icon
+        > 
+      </v-btn> -->
       <v-tooltip v-model="copiedTooltipCalendarID" top>
         <template v-slot:activator="{ attrs }">
           <v-btn
@@ -40,7 +44,7 @@
             class="mr-8"
             color="info"
           >
-            share view only<v-icon class="ml-1 mr-n1">mdi-table</v-icon>
+            share view<v-icon class="ml-1 mr-n1">mdi-table</v-icon>
           </v-btn>
         </template>
         <span>copied</span>
@@ -59,10 +63,10 @@
             v-on:mouseover="setHoverEditIDTrue"
             v-on:mouseleave="setHoverEditIDFalse"
             class="mr-8"
-            color="success"
+            color="info"
             :disabled="!allowEditID"
           >
-            share full edit<v-icon class="ml-1 mr-n1">mdi-pencil</v-icon>
+            share edit<v-icon class="ml-1 mr-n1">mdi-pencil</v-icon>
           </v-btn>
         </template>
         <span>copied</span>

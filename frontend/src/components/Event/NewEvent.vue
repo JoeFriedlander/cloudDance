@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!--
     <v-form @submit.prevent="newEvent">
       <v-text-field v-model="eventDescription" label="Event Description" />
       <v-text-field v-model="startTime" label="Start Time" />
@@ -12,14 +13,19 @@
           >Add event</v-btn
         >
       </v-card-actions>
-    </v-form>
+    </v-form> -->
   </div>
 </template>
 
 <script>
+import { eventBus } from "@/main";
 export default {
   name: "NewEvent",
-  props: ["calendarID"],
+  mounted() {
+    eventBus.$on("beginNewEventEmit", args => {
+      this.beginNewEvent(args);
+    });
+  },
   data() {
     return {
       eventDescription: "",
@@ -28,6 +34,19 @@ export default {
     };
   },
   methods: {
+    beginNewEvent(args) {
+      let calendarID = args.calendarID;
+      let allowEditID = args.allowEditID;
+      let start = args.mouseDownOn;
+      let end = args.mouseUpOn;
+      //If mouse dragged right to left for example, start is bigger than end so swap
+      if (start > end) {
+        let temp = start;
+        start = end;
+        end = temp;
+      }
+      console.log(calendarID, allowEditID, start, end);
+    },
     newEvent() {
       fetch(process.env.VUE_APP_APISERVER + "api/newEvent", {
         method: "POST",

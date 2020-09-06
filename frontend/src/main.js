@@ -9,6 +9,7 @@ Vue.use(VueClipboard);
 Vue.config.productionTip = false;
 
 export const calendarBus = new Vue();
+export const eventBus = new Vue();
 
 new Vue({
   router,

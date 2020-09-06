@@ -1,33 +1,55 @@
 <template>
   <div id="eventManager">
+    <v-menu
+      v-model="showMenu"
+      :close-on-click="menuDelayAllowClose"
+      :close-on-content-click="false"
+      :position-x="x"
+      :position-y="y"
+      absolute
+      offset-y
+    >
+      <v-card>
+        <v-form @submit.prevent="showMenu = false">
+          <v-list>
+            <v-list-item>
+              <v-text-field
+                v-model="eventDescription"
+                autofocus
+                placeholder="event"
+              ></v-text-field
+            ></v-list-item>
+            <v-list-item> start: {{ this.mouseUpOn }} ></v-list-item>
+            <v-list-item> end: {{ this.mouseDownOn }} ></v-list-item>
+          </v-list>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="showMenu = false">cancel</v-btn>
+            <v-btn color="success" text @click="showMenu = false">save</v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-menu>
     <div
       class="box"
       v-for="hour in hours"
       :key="hour"
-      @mousedown="mouseDownBox"
-      @mouseup="mouseUpBox"
-      @mouseover="mouseOverBox"
+      v-bind:id="hour"
+      @pointerdown="mouseDownBox"
+      @pointerup="mouseUpBox"
+      @pointerover="mouseOverBox"
     >
       ok <br />
       {{ hour }}
     </div>
-    <!--
-    <NewEvent :calendarID="calendarID" @newEventEmit="loadNewEvent"></NewEvent>
-    <br />
-    <div>List Of Events:</div>
-    <br />
-    <div v-for="eventID in eventIDs" :key="eventID">
-      <Event :eventID="eventID" @removeEventEmit="removeEventID"></Event>
-      <br />
-    </div>
-    -->
+    <NewEvent></NewEvent>
   </div>
 </template>
 
 <script>
+import { eventBus } from "@/main";
+import NewEvent from "@/components/Event/NewEvent.vue";
 //When event manager is mounted it gets a list of all eventIDs
-//import Event from "@/components/Event/Event.vue";
-//import NewEvent from "@/components/Event/NewEvent.vue";
 
 export default {
   name: "EventManager",
@@ -38,9 +60,16 @@ export default {
       mouseDownOn: "",
       //box the mouse brought up on
       mouseUpOn: "",
-      eventDescription: "",
+      start: "",
+      end: "",
+      event: "",
       eventIDs: [],
-      hours: []
+      hours: [],
+      showMenu: false,
+      //Prevents menu from closing automatically when pointer lifted up
+      menuDelayAllowClose: false,
+      x: 0,
+      y: 0
     };
   },
   mounted: function() {
@@ -48,6 +77,16 @@ export default {
     this.loadEventsFromCalendar();
   },
   methods: {
+    show(e) {
+      this.menuDelayAllowClose = false;
+      e.preventDefault();
+      this.showMenu = true;
+      this.x = e.clientX;
+      this.y = e.clientY;
+      setTimeout(() => {
+        this.menuDelayAllowClose = true;
+      }, 250);
+    },
     loadCalendarCreateDateTime() {
       //fetch calendar create time
     },
@@ -89,7 +128,7 @@ export default {
     createHours() {
       let currentHour = new Date().getHours();
       for (let i = currentHour; i <= currentHour + 23; i++) {
-        i < 24 ? this.hours.push(i) : this.hours.push(i - 24);
+        i < 24 ? this.hours.push(i + ":00") : this.hours.push(i - 24 + ":00");
       }
     },
     //box the mouse was pressed down on
@@ -97,9 +136,17 @@ export default {
       this.mouseDownOn = e;
       e.currentTarget.classList.add("selected");
     },
-    //box that the mouse was lifted up on
+    //box that the mouse was lifted up on, means selection is complete
     mouseUpBox(e) {
       this.mouseUpOn = e;
+      this.show(e);
+      //emit begin new event
+      eventBus.$emit("beginNewEventEmit", {
+        calendarID: this.calendarID,
+        allowEditID: this.allowEditID,
+        mouseDownOn: this.mouseDownOn.target.id,
+        mouseUpOn: this.mouseUpOn.target.id
+      });
       //reset selection
       this.resetSelection();
     },
@@ -128,8 +175,7 @@ export default {
     }
   },
   components: {
-    //Event,
-    //NewEvent
+    NewEvent
   }
 };
 </script>
@@ -151,9 +197,6 @@ export default {
   padding-top: 2vh;
   min-width: 4em;
   height: 100%;
-}
-.box:last-child {
-  border-right: none;
 }
 .selected {
   background-color: rgb(76, 175, 80);
