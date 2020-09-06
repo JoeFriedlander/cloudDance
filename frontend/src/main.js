@@ -4,6 +4,8 @@ import router from "./router";
 import store from "./store";
 import VueClipboard from "vue-clipboard2";
 import vuetify from "./plugins/vuetify";
+import moment from "moment";
+Vue.prototype.moment = moment;
 
 Vue.use(VueClipboard);
 Vue.config.productionTip = false;

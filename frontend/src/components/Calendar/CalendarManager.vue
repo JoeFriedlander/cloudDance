@@ -8,6 +8,7 @@
         <Calendar
           :calendarID="calendarAndEditID.calendarID"
           :allowEditID="calendarAndEditID.allowEditID"
+          :dateTimeCreatedUTC="calendarAndEditID.dateTimeCreatedUTC"
           @removeCalendarEmit="removeCalendarAndEditID"
         ></Calendar>
       </v-col>
@@ -16,8 +17,6 @@
 </template>
 
 <script>
-//import NewCalendar from "@/components/Calendar/NewCalendar.vue";
-//import GetCalendar from "@/components/Calendar/GetCalendar.vue";
 import Calendar from "@/components/Calendar/Calendar.vue";
 import { calendarBus } from "@/main";
 
@@ -26,7 +25,7 @@ export default {
   props: ["possibleRouteCalendarID"],
   data() {
     return {
-      //Array of objects made up of calendarID and allowEditID.
+      //Array of objects made up of calendarID, allowEditID, and dateTimeCreatedUTC.
       calendarAndEditIDs: []
     };
   },

@@ -80,7 +80,11 @@
         close<v-icon class="ml-1 mr-n1">mdi-close</v-icon>
       </v-btn>
     </v-toolbar>
-    <EventManager :calendarID="calendarID" :allowEditID="allowEditID">
+    <EventManager
+      :calendarID="calendarID"
+      :allowEditID="allowEditID"
+      :dateTimeCreatedUTC="dateTimeCreatedUTC"
+    >
     </EventManager>
   </v-card>
 </template>
@@ -90,7 +94,7 @@ import EventManager from "@/components/Event/EventManager.vue";
 
 export default {
   name: "Calendar",
-  props: ["calendarID", "allowEditID"],
+  props: ["calendarID", "allowEditID", "dateTimeCreatedUTC"],
   data() {
     return {
       show: false,

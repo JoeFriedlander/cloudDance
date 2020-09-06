@@ -1,6 +1,9 @@
 //Load environmental variables
 require('dotenv').config()
 
+//load packages
+const moment = require('moment');
+
 // DB Settings
 const { Pool } = require('pg')
 const connectionString = process.env.DATABASE_URL;
@@ -41,11 +44,12 @@ app.use(function (req, res, next) {
 app.post('/api/newCalendar', (req, res, next) => {
     let calendarID = 'ubik' + createID().substring(4);
     let allowEditID = 'edit' + createID().substring(4)
+    let currentTimeUTC = moment().utc().format('YYYY-MM-DD H:mm:ss');
     pool
-        .query('INSERT INTO calendar(calendarID, allowEditID, dateTimeCreated) VALUES($1, $2, LOCALTIMESTAMP)', [calendarID, allowEditID])
+        .query('INSERT INTO calendar(calendarID, allowEditID, dateTimeCreated) VALUES($1, $2, $3)', [calendarID, allowEditID, currentTimeUTC])
         .then(pgresult => {
-            //If successful send the new calendar id
-            res.status(201).send(JSON.stringify({calendarID:calendarID, allowEditID:allowEditID}));
+            //If successful send the new calendar info
+            res.status(201).send(JSON.stringify({calendarID:calendarID, allowEditID:allowEditID, dateTimeCreatedUTC:currentTimeUTC}));
         })
         .catch(e => {console.error(e.stack);
             res.status(400).end();}
@@ -110,16 +114,15 @@ app.get('/api/calendarExists', (req, res, next) => {
 app.post('/api/newEvent', (req, res, next) => {
     let calendarID = req.body.calendarID;
     let eventDescription = req.body.eventDescription;
-    let starttime = req.body.starttime;
-    let length = 100;
+    let startTime = req.body.startTime;
+    let endTime = req.body.endTime;
     let eventID = createID();
     let allowEditID = req.body.allowEditID;
+    let currentTimeUTC = moment().utc().format('YYYY-MM-DD H:mm:ss');
     //temporary value for starttime
-    starttime = Date.now();
-
     pool
-    .query('INSERT INTO event (eventID, dateTimeCreated, calendarID, eventDescription, starttime, length) VALUES ($1, LOCALTIMESTAMP, $2, $3, (to_timestamp($4 / 1000.0)), $5)', 
-        [eventID, calendarID, eventDescription, starttime, length])
+    .query('INSERT INTO event (eventID, dateTimeCreated, calendarID, eventDescription, starttime, endtime) VALUES ($1, $2, $3, $4, $5, $6)', 
+        [eventID, currentTimeUTC, calendarID, eventDescription, startTime, endTime])
     .then(pgresult => {
         res.status(201).send(eventID);
     })

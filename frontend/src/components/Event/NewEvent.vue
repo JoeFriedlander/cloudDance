@@ -1,64 +1,43 @@
 <template>
-  <div>
-    <!--
-    <v-form @submit.prevent="newEvent">
-      <v-text-field v-model="eventDescription" label="Event Description" />
-      <v-text-field v-model="startTime" label="Start Time" />
-      <v-text-field v-model="length" label="Length" />
-      <v-card-actions>
-        <v-btn
-          @click="newEvent"
-          :disabled="eventDescription.toString().trim().length === 0"
-          color="info"
-          >Add event</v-btn
-        >
-      </v-card-actions>
-    </v-form> -->
-  </div>
+  <span></span>
 </template>
 
 <script>
 import { eventBus } from "@/main";
+import moment from "moment";
 export default {
   name: "NewEvent",
   mounted() {
-    eventBus.$on("beginNewEventEmit", args => {
-      this.beginNewEvent(args);
+    eventBus.$on("newEventEmit", args => {
+      this.newEvent(args);
     });
   },
   data() {
-    return {
-      eventDescription: "",
-      startTime: "",
-      length: ""
-    };
+    return {};
   },
   methods: {
-    beginNewEvent(args) {
+    newEvent(args) {
+      console.log("new event");
       let calendarID = args.calendarID;
+      let event = args.event;
       let allowEditID = args.allowEditID;
-      let start = args.mouseDownOn;
-      let end = args.mouseUpOn;
-      //If mouse dragged right to left for example, start is bigger than end so swap
-      if (start > end) {
-        let temp = start;
-        start = end;
-        end = temp;
-      }
-      console.log(calendarID, allowEditID, start, end);
-    },
-    newEvent() {
+      let startUTC = moment(args.start)
+        .utc()
+        .format("YYYY-MM-DD H:mm:ss");
+      let endUTC = moment(args.end)
+        .utc()
+        .format("YYYY-MM-DD H:mm:ss");
       fetch(process.env.VUE_APP_APISERVER + "api/newEvent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          calendarID: this.$props.calendarID,
-          eventDescription: this.eventDescription,
-          startTime: this.startTime,
-          length: this.length,
-          allowEditID: this.$parent.allowEditID
+          calendarID: calendarID,
+          eventDescription: event,
+          startTime: startUTC,
+          endTime: endUTC,
+          allowEditID: allowEditID
         })
       })
         .then(response => {

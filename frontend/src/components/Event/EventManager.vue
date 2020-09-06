@@ -4,28 +4,49 @@
       v-model="showMenu"
       :close-on-click="menuDelayAllowClose"
       :close-on-content-click="false"
-      :position-x="x"
-      :position-y="y"
+      :position-x="x + 25"
+      :position-y="y - 25"
       absolute
       offset-y
     >
       <v-card>
-        <v-form @submit.prevent="showMenu = false">
-          <v-list>
+        <v-form
+          @submit.prevent="
+            () => {
+              newEvent();
+              showMenu = false;
+            }
+          "
+        >
+          <v-list dense>
             <v-list-item>
               <v-text-field
-                v-model="eventDescription"
+                class="mt-n1"
+                v-model="event"
                 autofocus
+                color="grey"
                 placeholder="event"
               ></v-text-field
             ></v-list-item>
-            <v-list-item> start: {{ this.mouseUpOn }} ></v-list-item>
-            <v-list-item> end: {{ this.mouseDownOn }} ></v-list-item>
+            <v-list-item class="mt-n4">
+              {{ moment(this.start).format("h a dddd") }} -
+              {{ moment(this.end).format("h a dddd") }}
+            </v-list-item>
           </v-list>
-          <v-card-actions>
+          <v-card-actions class="mt-n4">
             <v-spacer></v-spacer>
             <v-btn text @click="showMenu = false">cancel</v-btn>
-            <v-btn color="success" text @click="showMenu = false">save</v-btn>
+            <v-btn
+              color="success"
+              text
+              @click="
+                () => {
+                  newEvent();
+                  showMenu = false;
+                }
+              "
+              >save</v-btn
+            >
           </v-card-actions>
         </v-form>
       </v-card>
@@ -39,8 +60,8 @@
       @pointerup="mouseUpBox"
       @pointerover="mouseOverBox"
     >
-      ok <br />
-      {{ hour }}
+      <br />
+      {{ moment(hour).format("h a dddd") }}
     </div>
     <NewEvent></NewEvent>
   </div>
@@ -49,22 +70,26 @@
 <script>
 import { eventBus } from "@/main";
 import NewEvent from "@/components/Event/NewEvent.vue";
-//When event manager is mounted it gets a list of all eventIDs
+import moment from "moment";
 
 export default {
   name: "EventManager",
-  props: ["calendarID", "allowEditID"],
+  props: ["calendarID", "allowEditID", "dateTimeCreatedUTC"],
   data() {
     return {
       //box the mouse first brought down on
       mouseDownOn: "",
       //box the mouse brought up on
       mouseUpOn: "",
+      //used in menu describing event
       start: "",
       end: "",
       event: "",
-      eventIDs: [],
+      //hours used for schedule
       hours: [],
+      //list of events
+      eventIDs: [],
+      //show menu bool
       showMenu: false,
       //Prevents menu from closing automatically when pointer lifted up
       menuDelayAllowClose: false,
@@ -76,7 +101,16 @@ export default {
     this.createHours();
     this.loadEventsFromCalendar();
   },
+  watch: {
+    //when showMenu changes to false (menu closes) then reset the selected elements
+    showMenu() {
+      if (this.showMenu === false) {
+        this.resetSelection();
+      }
+    }
+  },
   methods: {
+    //shows menu
     show(e) {
       this.menuDelayAllowClose = false;
       e.preventDefault();
@@ -125,35 +159,28 @@ export default {
           console.log("error: " + error);
         });
     },
-    createHours() {
-      let currentHour = new Date().getHours();
-      for (let i = currentHour; i <= currentHour + 23; i++) {
-        i < 24 ? this.hours.push(i + ":00") : this.hours.push(i - 24 + ":00");
-      }
-    },
     //box the mouse was pressed down on
     mouseDownBox(e) {
-      this.mouseDownOn = e;
+      this.mouseDownOn = e.target.id;
       e.currentTarget.classList.add("selected");
     },
-    //box that the mouse was lifted up on, means selection is complete
+    //box that the mouse was lifted up on, means date/time selection is complete and open menu
     mouseUpBox(e) {
-      this.mouseUpOn = e;
+      this.mouseUpOn = e.target.id;
+      this.event = "";
+      this.start = this.mouseDownOn;
+      this.end = this.mouseUpOn;
+      if (this.start > this.end) {
+        let temp = this.start;
+        this.start = this.end;
+        this.end = temp;
+      }
       this.show(e);
-      //emit begin new event
-      eventBus.$emit("beginNewEventEmit", {
-        calendarID: this.calendarID,
-        allowEditID: this.allowEditID,
-        mouseDownOn: this.mouseDownOn.target.id,
-        mouseUpOn: this.mouseUpOn.target.id
-      });
-      //reset selection
-      this.resetSelection();
     },
     //box the mouse was moved over
     mouseOverBox(e) {
       //highlight only if mouse is down and isn't the mousedown box
-      if (this.mouseDownOn) {
+      if (this.mouseDownOn && !this.showMenu) {
         e.currentTarget.classList.add("highlighted");
       }
     },
@@ -161,6 +188,7 @@ export default {
     //mouseOutEventManager() {
     //  this.resetSelection();
     //},
+    //resets selected time elements
     resetSelection() {
       this.mouseDownOn = "";
       this.mouseUpOn = "";
@@ -172,6 +200,30 @@ export default {
       while (highlightedEls.length) {
         highlightedEls[0].classList.remove("highlighted");
       }
+    },
+    dateTimeCreatedLocal() {
+      return moment.utc(this.dateTimeCreatedUTC).local();
+    },
+    createHours() {
+      for (let i = 0; i <= 23; i++) {
+        this.hours.push(
+          moment(this.dateTimeCreatedLocal())
+            .add(i, "hours")
+            .startOf("hour")
+            .format()
+        );
+      }
+    },
+    //when form is submitted emit new event
+    newEvent() {
+      //emit new event
+      eventBus.$emit("newEventEmit", {
+        calendarID: this.calendarID,
+        event: this.event,
+        allowEditID: this.allowEditID,
+        start: this.start,
+        end: this.end
+      });
     }
   },
   components: {
@@ -197,13 +249,14 @@ export default {
   padding-top: 2vh;
   min-width: 4em;
   height: 100%;
+  color: grey;
 }
 .selected {
   background-color: rgb(76, 175, 80);
   color: white;
 }
 .highlighted {
-  background-color: rgb(76, 175, 80, 0.5);
+  background-color: rgba(76, 175, 79, 0.637);
   color: white;
 }
 </style>
