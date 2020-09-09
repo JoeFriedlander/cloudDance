@@ -52,17 +52,30 @@
       </v-card>
     </v-menu>
     <div
+      v-for="(hour, index) in hours"
       class="box"
-      v-for="hour in hours"
       :key="hour"
       v-bind:id="hour"
-      @pointerdown="mouseDownBox"
-      @pointerup="mouseUpBox"
-      @pointerover="mouseOverBox"
+      @pointerdown="pointerDownBox"
+      @pointerup="pointerUpBox"
+      @pointerover="pointerOverBox"
     >
-      <br />
-      {{ moment(hour).format("h a dddd") }}
+      {{ index + '.....' + moment(hour).format("h a ddd") }}
     </div>
+    <v-card
+      v-for="event in events"
+      class="event"
+      color="info"
+      dark
+      :key="event.eventid"
+      v-bind:id="event.eventid"
+      :style="{
+        top: getInitialEventTop(event),
+        left: getInitialEventLeft(event)
+      }"
+    >
+      {{ event.eventdescription }}
+    </v-card>
     <NewEvent></NewEvent>
   </div>
 </template>
@@ -77,10 +90,10 @@ export default {
   props: ["calendarID", "allowEditID", "dateTimeCreatedUTC"],
   data() {
     return {
-      //box the mouse first brought down on
-      mouseDownOn: "",
-      //box the mouse brought up on
-      mouseUpOn: "",
+      //box the pointer first brought down on
+      pointerDownOn: "",
+      //box the pointer brought up on
+      pointerUpOn: "",
       //used in menu describing event
       start: "",
       end: "",
@@ -88,7 +101,7 @@ export default {
       //hours used for schedule
       hours: [],
       //list of events
-      eventIDs: [],
+      events: [],
       //show menu bool
       showMenu: false,
       //Prevents menu from closing automatically when pointer lifted up
@@ -99,7 +112,8 @@ export default {
   },
   mounted: function() {
     this.createHours();
-    this.loadEventsFromCalendar();
+    //inefficient way to keep events updated :(
+    setInterval(this.loadEvents, 1000);
   },
   watch: {
     //when showMenu changes to false (menu closes) then reset the selected elements
@@ -121,18 +135,10 @@ export default {
         this.menuDelayAllowClose = true;
       }, 250);
     },
-    loadCalendarCreateDateTime() {
-      //fetch calendar create time
+    removeEventID() {
+      //send delete
     },
-    loadNewEvent(eventID) {
-      this.eventIDs.push(eventID);
-    },
-    removeEventID(eventIDToRemove) {
-      this.eventIDs = this.eventIDs.filter(
-        eventID => eventID !== eventIDToRemove
-      );
-    },
-    loadEventsFromCalendar() {
+    loadEvents() {
       fetch(
         process.env.VUE_APP_APISERVER +
           "api/loadEventsFromCalendar?calendarID=" +
@@ -147,29 +153,53 @@ export default {
         .then(response => {
           if (response.status === 200) {
             response.json().then(response => {
-              for (let eventObject of response) {
-                this.loadNewEvent(eventObject.eventid);
+              if (JSON.stringify(response) == JSON.stringify(this.events)) {
+                // local events same as server, no update
+              } else {
+                // if local events different from server, re-initialize local list of events and load from server
+                this.events = [];
+                for (let eventObject of response) {
+                  this.events.push(eventObject);
+                }
               }
             });
           } else {
             console.log("error getting events from calendar");
           }
         })
+        .then(() => {
+          //
+        })
         .catch(error => {
           console.log("error: " + error);
         });
     },
-    //box the mouse was pressed down on
-    mouseDownBox(e) {
-      this.mouseDownOn = e.target.id;
+    //todo both top and left in one loop
+    // Matches event to corresponding time to get the initial css top
+    getInitialEventTop(event) {
+      console.log(JSON.stringify(event.starttime));
+      for (let hour of this.hours) {
+              console.log(JSON.stringify(hour));
+        if (JSON.stringify(hour) == JSON.stringify(event.starttime)) {
+          console.log(hour);
+        }
+      }
+    },
+    // Matches event to corresponding time to get the initial css left
+    getInitialEventLeft() {
+      //console.log(event);
+    },
+    //box the pointer was pressed down on
+    pointerDownBox(e) {
+      this.pointerDownOn = e.target.id;
       e.currentTarget.classList.add("selected");
     },
-    //box that the mouse was lifted up on, means date/time selection is complete and open menu
-    mouseUpBox(e) {
-      this.mouseUpOn = e.target.id;
+    //box that the pointer was lifted up on, means date/time selection is complete and open menu
+    pointerUpBox(e) {
+      this.pointerUpOn = e.target.id;
       this.event = "";
-      this.start = this.mouseDownOn;
-      this.end = this.mouseUpOn;
+      this.start = this.pointerDownOn;
+      this.end = this.pointerUpOn;
       if (this.start > this.end) {
         let temp = this.start;
         this.start = this.end;
@@ -177,21 +207,21 @@ export default {
       }
       this.show(e);
     },
-    //box the mouse was moved over
-    mouseOverBox(e) {
-      //highlight only if mouse is down and isn't the mousedown box
-      if (this.mouseDownOn && !this.showMenu) {
+    //box the pointer was moved over
+    pointerOverBox(e) {
+      //highlight only if pointer is down and isn't the pointerdown box
+      if (this.pointerDownOn && !this.showMenu) {
         e.currentTarget.classList.add("highlighted");
       }
     },
-    //if mouse goes outside event manager then cancel selection
-    //mouseOutEventManager() {
+    //if pointer goes outside event manager then cancel selection
+    //pointerOutEventManager() {
     //  this.resetSelection();
     //},
     //resets selected time elements
     resetSelection() {
-      this.mouseDownOn = "";
-      this.mouseUpOn = "";
+      this.pointerDownOn = "";
+      this.pointerUpOn = "";
       let selectedEls = document.getElementsByClassName("selected");
       while (selectedEls.length) {
         selectedEls[0].classList.remove("selected");
@@ -201,16 +231,14 @@ export default {
         highlightedEls[0].classList.remove("highlighted");
       }
     },
-    dateTimeCreatedLocal() {
-      return moment.utc(this.dateTimeCreatedUTC).local();
-    },
     createHours() {
       for (let i = 0; i <= 23; i++) {
         this.hours.push(
-          moment(this.dateTimeCreatedLocal())
+          moment
+            .utc()
             .add(i, "hours")
             .startOf("hour")
-            .format()
+            .format('YYYY-MM-DD H:mm:ss')
         );
       }
     },
@@ -241,15 +269,21 @@ export default {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   user-select: none;
+  color: grey;
 }
 .box {
-  border-bottom: 1px solid rgb(158, 158, 158);
-  border-right: 1px solid rgb(158, 158, 158);
   text-align: center;
-  padding-top: 2vh;
+  padding-top: 6vh;
   min-width: 4em;
   height: 100%;
-  color: grey;
+  z-index: 2;
+  opacity: 0.5;
+}
+.boxTime {
+  z-index: 1;
+}
+.boxLower {
+  background-color: rgba(214, 206, 206, 0.116);
 }
 .selected {
   background-color: rgb(76, 175, 80);
@@ -257,6 +291,14 @@ export default {
 }
 .highlighted {
   background-color: rgba(76, 175, 79, 0.637);
+  color: white;
+}
+.hasEvent {
+  background-color: "blue";
+}
+.event {
+  position: absolute;
+  background-color: rgba(33, 149, 243, 0.8);
   color: white;
 }
 </style>

@@ -5,13 +5,16 @@ require('dotenv').config()
 const moment = require('moment');
 
 // DB Settings
-const { Pool } = require('pg')
+const pg = require('pg')
+//fix to stop auto-convert timestamps on select
+pg.types.setTypeParser(1114, function(stringValue) {return stringValue;});
+//connection string
 const connectionString = process.env.DATABASE_URL;
+// If the DB doesn't use SSL then create the pool without referencing ssl
 if (process.env.DATABASE_DOESNT_USE_SSL) {
-    // If the DB doesn't use SSL, create the pool without referencing ssl
-    pool = new Pool({connectionString: connectionString})}
+    pool = new pg.Pool({connectionString: connectionString})}
 else {
-    pool = new Pool({connectionString: connectionString, ssl: {rejectUnauthorized: false}})
+    pool = new pg.Pool({connectionString: connectionString, ssl: {rejectUnauthorized: false}})
 }
 
 // Server Settings
@@ -124,23 +127,11 @@ app.post('/api/newEvent', (req, res, next) => {
     .query('INSERT INTO event (eventID, dateTimeCreated, calendarID, eventDescription, starttime, endtime) VALUES ($1, $2, $3, $4, $5, $6)', 
         [eventID, currentTimeUTC, calendarID, eventDescription, startTime, endTime])
     .then(pgresult => {
-        res.status(201).send(eventID);
+        res.status(201).end();
     })
     .catch(e => {console.error(e.stack);
         res.status(400).end();}
     )
-});
-
-app.get('/api/getEvent', (req, res, next) => {
-    let eventID = req.query.eventID;
-    pool
-        .query('SELECT eventDescription, startTime, length FROM event WHERE eventID = $1', [eventID])
-        .then(pgresult => {
-            res.status(200).send(pgresult.rows[0])
-        })
-        .catch(e => {console.error(e.stack);
-            res.status(400).end();}
-        )
 });
 
 app.delete('/api/deleteEvent', (req, res, next) => {
@@ -161,9 +152,10 @@ app.delete('/api/deleteEvent', (req, res, next) => {
 app.get('/api/loadEventsFromCalendar', (req, res, next) => {
     let calendarID = req.query.calendarID;
     pool
-        .query('SELECT eventID FROM event WHERE calendarID = $1', [calendarID])
+        .query('SELECT eventID, dateTimeCreated, calendarID, eventDescription, starttime, endtime FROM event WHERE calendarID = $1', [calendarID])
         .then(pgresult => {
-            res.send(pgresult.rows);
+            console.log(pgresult.rows);
+            res.status(200).send(pgresult.rows);
         })
         .catch(e => {console.error(e.stack);
             res.status(400).end();}

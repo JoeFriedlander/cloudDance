@@ -17,7 +17,6 @@ export default {
   },
   methods: {
     newEvent(args) {
-      console.log("new event");
       let calendarID = args.calendarID;
       let event = args.event;
       let allowEditID = args.allowEditID;
@@ -41,14 +40,7 @@ export default {
         })
       })
         .then(response => {
-          if (response.status === 201) {
-            response.text().then(response => {
-              this.$emit("newEventEmit", response);
-              this.eventDescription = "";
-              this.startTime = "";
-              this.length = "";
-            });
-          } else {
+          if (response.status != 201) {
             console.log("Could not create new event");
           }
         })
