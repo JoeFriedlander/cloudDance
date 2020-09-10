@@ -1,7 +1,8 @@
 <template>
   <v-card class="mt-5" elevation="2">
     <v-toolbar dense elevation="2" color="#e0e0e0">
-      <v-toolbar-title>
+            <v-spacer></v-spacer>
+      <v-toolbar-title class="mr-8">
         <span v-show="allowEditID && !hoverEditID && !hoverCalendarID">
           {{ webserver + calendarID + "+" + allowEditID }}
         </span>
@@ -21,7 +22,6 @@
           <mark>{{ webserver + calendarID }}</mark>
         </span>
       </v-toolbar-title>
-      <v-spacer></v-spacer>
       <!--
       <v-btn v-show="!allowEditID" color="indigo" dark class="mr-8">
         Warning: BASIC ubiKal detected - Click here to upgrade<v-icon

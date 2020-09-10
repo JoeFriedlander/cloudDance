@@ -47,7 +47,7 @@ app.use(function (req, res, next) {
 app.post('/api/newCalendar', (req, res, next) => {
     let calendarID = 'ubik' + createID().substring(4);
     let allowEditID = 'edit' + createID().substring(4)
-    let currentTimeUTC = moment().utc().format('YYYY-MM-DD H:mm:ss');
+    let currentTimeUTC = moment().utc().format('YYYY-MM-DD HH:mm:ss');
     pool
         .query('INSERT INTO calendar(calendarID, allowEditID, dateTimeCreated) VALUES($1, $2, $3)', [calendarID, allowEditID, currentTimeUTC])
         .then(pgresult => {
@@ -115,13 +115,14 @@ app.get('/api/calendarExists', (req, res, next) => {
 });
 
 app.post('/api/newEvent', (req, res, next) => {
+    console.log('received new event ' + req.body.eventDescription)
     let calendarID = req.body.calendarID;
     let eventDescription = req.body.eventDescription;
     let startTime = req.body.startTime;
     let endTime = req.body.endTime;
     let eventID = createID();
     let allowEditID = req.body.allowEditID;
-    let currentTimeUTC = moment().utc().format('YYYY-MM-DD H:mm:ss');
+    let currentTimeUTC = moment().utc().format('YYYY-MM-DD HH:mm:ss');
     //temporary value for starttime
     pool
     .query('INSERT INTO event (eventID, dateTimeCreated, calendarID, eventDescription, starttime, endtime) VALUES ($1, $2, $3, $4, $5, $6)', 
@@ -154,7 +155,6 @@ app.get('/api/loadEventsFromCalendar', (req, res, next) => {
     pool
         .query('SELECT eventID, dateTimeCreated, calendarID, eventDescription, starttime, endtime FROM event WHERE calendarID = $1', [calendarID])
         .then(pgresult => {
-            console.log(pgresult.rows);
             res.status(200).send(pgresult.rows);
         })
         .catch(e => {console.error(e.stack);

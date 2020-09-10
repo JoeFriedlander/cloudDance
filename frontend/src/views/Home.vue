@@ -1,9 +1,9 @@
 <template>
-  <div class="home">
+  <v-container fluid class="home">
     <CalendarManager
       routeCalendarID="this.$route.params.routeCalendarID"
     ></CalendarManager>
-  </div>
+  </v-container>
 </template>
 
 <script>

@@ -20,12 +20,8 @@ export default {
       let calendarID = args.calendarID;
       let event = args.event;
       let allowEditID = args.allowEditID;
-      let startUTC = moment(args.start)
-        .utc()
-        .format("YYYY-MM-DD H:mm:ss");
-      let endUTC = moment(args.end)
-        .utc()
-        .format("YYYY-MM-DD H:mm:ss");
+      let startUTC = moment(args.start).format("YYYY-MM-DD HH:mm:ss");
+      let endUTC = moment(args.end).format("YYYY-MM-DD HH:mm:ss");
       fetch(process.env.VUE_APP_APISERVER + "api/newEvent", {
         method: "POST",
         headers: {

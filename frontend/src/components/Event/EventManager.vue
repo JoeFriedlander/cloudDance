@@ -29,8 +29,17 @@
               ></v-text-field
             ></v-list-item>
             <v-list-item class="mt-n4">
-              {{ moment(this.start).format("h a dddd") }} -
-              {{ moment(this.end).format("h a dddd") }}
+              {{
+                moment(moment.utc(start).toDate())
+                  .local()
+                  .format("h a dddd")
+              }}
+              -
+              {{
+                moment(moment.utc(end).toDate())
+                  .local()
+                  .format("h a dddd")
+              }}
             </v-list-item>
           </v-list>
           <v-card-actions class="mt-n4">
@@ -39,7 +48,7 @@
             <v-btn
               color="success"
               text
-              @click="
+              @click.stop="
                 () => {
                   newEvent();
                   showMenu = false;
@@ -60,7 +69,13 @@
       @pointerup="pointerUpBox"
       @pointerover="pointerOverBox"
     >
-      {{ index + '.....' + moment(hour).format("h a ddd") }}
+      {{
+        moment(moment.utc(hour).toDate())
+          .local()
+          .format("h a ddd") +
+          " index: " +
+          index
+      }}
     </div>
     <v-card
       v-for="event in events"
@@ -174,14 +189,13 @@ export default {
           console.log("error: " + error);
         });
     },
-    //todo both top and left in one loop
-    // Matches event to corresponding time to get the initial css top
+    // todo both top and left in one loop
+    // Matches event starttime to corresponding time element to get the initial css top
     getInitialEventTop(event) {
-      console.log(JSON.stringify(event.starttime));
       for (let hour of this.hours) {
-              console.log(JSON.stringify(hour));
-        if (JSON.stringify(hour) == JSON.stringify(event.starttime)) {
-          console.log(hour);
+        if (String(hour) == String(event.starttime)) {
+          console.log(String(hour));
+          console.log(document.getElementById(String(hour)));
         }
       }
     },
@@ -231,14 +245,15 @@ export default {
         highlightedEls[0].classList.remove("highlighted");
       }
     },
+    //Get datetime the calendar was created.
+    //Then starting at the beginning of the previous hour, fill that then +1 hour at a time
     createHours() {
       for (let i = 0; i <= 23; i++) {
         this.hours.push(
-          moment
-            .utc()
+          moment(this.dateTimeCreatedUTC)
             .add(i, "hours")
             .startOf("hour")
-            .format('YYYY-MM-DD H:mm:ss')
+            .format("YYYY-MM-DD HH:mm:ss")
         );
       }
     },
