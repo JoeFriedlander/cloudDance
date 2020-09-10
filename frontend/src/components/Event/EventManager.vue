@@ -1,5 +1,5 @@
 <template>
-  <div id="eventManager">
+  <div id="eventManager" :style="{ position: 'relative' }">
     <v-menu
       v-model="showMenu"
       :close-on-click="menuDelayAllowClose"
@@ -84,10 +84,7 @@
       dark
       :key="event.eventid"
       v-bind:id="event.eventid"
-      :style="{
-        top: getInitialEventTop(event),
-        left: getInitialEventLeft(event)
-      }"
+      :style="{ left: getEventLeft(event), position: 'absolute' }"
     >
       {{ event.eventdescription }}
     </v-card>
@@ -189,19 +186,17 @@ export default {
           console.log("error: " + error);
         });
     },
-    // todo both top and left in one loop
-    // Matches event starttime to corresponding time element to get the initial css top
-    getInitialEventTop(event) {
+    // Matches event starttime to corresponding time element to get the initial css left
+    getEventLeft(event) {
       for (let hour of this.hours) {
         if (String(hour) == String(event.starttime)) {
-          console.log(String(hour));
-          console.log(document.getElementById(String(hour)));
+          console.log(document.getElementById(String(hour)).getBoundingClientRect());
+          return (
+            document.getElementById(String(hour)).getBoundingClientRect().x +
+            "px"
+          );
         }
       }
-    },
-    // Matches event to corresponding time to get the initial css left
-    getInitialEventLeft() {
-      //console.log(event);
     },
     //box the pointer was pressed down on
     pointerDownBox(e) {
@@ -312,8 +307,10 @@ export default {
   background-color: "blue";
 }
 .event {
-  position: absolute;
+  margin-top: 6vh;
+  opacity: 0.8;
   background-color: rgba(33, 149, 243, 0.8);
   color: white;
+  z-index: 3;
 }
 </style>
