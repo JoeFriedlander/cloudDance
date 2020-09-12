@@ -39,10 +39,10 @@ export default {
     }
     //listen for emits from calendar buttons
     calendarBus.$on("newCalendarEmit", calendarAndEditID => {
-      this.addCalendarIDtoArray(calendarAndEditID);
+      this.addCalendarToArray(calendarAndEditID);
     });
     calendarBus.$on("calendarIDFoundEmit", calendarAndEditID => {
-      this.addCalendarIDtoArray(calendarAndEditID);
+      this.addCalendarToArray(calendarAndEditID);
     });
     calendarBus.$on("calendarIDNotFoundEmit", calendarAndEditID => {
       this.calendarIDNotFound(calendarAndEditID);
@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     //Checks isCalendarIDUnique() before loading, so no duplicate calendars are added
-    addCalendarIDtoArray(calendarAndEditID) {
+    addCalendarToArray(calendarAndEditID) {
       if (this.isCalendarIDUnique(calendarAndEditID.calendarID)) {
         this.calendarAndEditIDs.push(calendarAndEditID);
       } else {

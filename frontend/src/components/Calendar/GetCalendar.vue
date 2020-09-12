@@ -45,10 +45,10 @@ export default {
     //Reaches out to api to get an existing calendar and edit ID
     //if input includes editID, also check that matches up
     loadCalendar(input) {
-      input = this.sanitizeCalendarID(input);
+      input = this.extractCalendarID(input);
       fetch(
         process.env.VUE_APP_APISERVER +
-          "api/calendarExists?calendarID=" +
+          "api/calendar?calendarID=" +
           input.calendarID +
           "&allowEditID=" +
           input.allowEditID,
@@ -71,7 +71,7 @@ export default {
           console.log("error: " + error);
         });
     },
-    sanitizeCalendarID(input) {
+    extractCalendarID(input) {
       let calendarID = "";
       let allowEditID = "";
       //Checks if a url like ubikal.com/abc123 or https://www.ubikal.com/abc123 is used
@@ -96,7 +96,7 @@ export default {
       return { calendarID: input, allowEditID: "" };
     },
     setErrorCalendarNotFoundTrue: function() {
-      this.errorMessage = "error 82015: ubiKal not found";
+      this.errorMessage = "error 82015 - ubiKal not found";
       this.activeError = true;
       setTimeout(this.setErrorCalendarNotFoundFalse, 2500);
     },
@@ -104,7 +104,7 @@ export default {
       this.activeError = false;
     },
     setErrorCalendarAlreadyLoadedTrue: function() {
-      this.errorMessage = "error 39148.2(b) : ubiKal already loaded";
+      this.errorMessage = "error 49148.2(b) - ubiKal already loaded";
       this.activeError = true;
       setTimeout(this.setErrorCalendarAlreadyLoadedFalse, 4000);
     },

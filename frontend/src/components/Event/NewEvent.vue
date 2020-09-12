@@ -22,7 +22,7 @@ export default {
       let allowEditID = args.allowEditID;
       let startUTC = moment(args.start).format("YYYY-MM-DD HH:mm:ss");
       let endUTC = moment(args.end).format("YYYY-MM-DD HH:mm:ss");
-      fetch(process.env.VUE_APP_APISERVER + "api/newEvent", {
+      fetch(process.env.VUE_APP_APISERVER + "api/event", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

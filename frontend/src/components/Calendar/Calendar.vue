@@ -1,7 +1,7 @@
 <template>
   <v-card class="mt-5" elevation="2">
     <v-toolbar dense elevation="2" color="#e0e0e0">
-            <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
       <v-toolbar-title class="mr-8">
         <span v-show="allowEditID && !hoverEditID && !hoverCalendarID">
           {{ webserver + calendarID + "+" + allowEditID }}
@@ -113,7 +113,7 @@ export default {
     deleteCalendar() {
       fetch(
         process.env.VUE_APP_APISERVER +
-          "api/deleteCalendar" +
+          "api/calendar" +
           "?calendarID=" +
           this.calendarID,
         {

@@ -61,7 +61,7 @@
       </v-card>
     </v-menu>
     <div
-      v-for="(hour, index) in hours"
+      v-for="hour in hours"
       class="box"
       :key="hour"
       v-bind:id="hour"
@@ -69,12 +69,12 @@
       @pointerup="pointerUpBox"
       @pointerover="pointerOverBox"
     >
+      <br />
+      <br />
       {{
         moment(moment.utc(hour).toDate())
           .local()
-          .format("h a ddd") +
-          " index: " +
-          index
+          .format("h a ddd")
       }}
     </div>
     <v-card
@@ -84,7 +84,11 @@
       dark
       :key="event.eventid"
       v-bind:id="event.eventid"
-      :style="{ left: getEventLeft(event), position: 'absolute' }"
+      :style="{
+        left: getEventLeft(event),
+        width: getEventWidth(event),
+        position: 'absolute'
+      }"
     >
       {{ event.eventdescription }}
     </v-card>
@@ -153,7 +157,7 @@ export default {
     loadEvents() {
       fetch(
         process.env.VUE_APP_APISERVER +
-          "api/loadEventsFromCalendar?calendarID=" +
+          "api/events?calendarID=" +
           this.calendarID,
         {
           method: "GET",
@@ -186,14 +190,27 @@ export default {
           console.log("error: " + error);
         });
     },
+    // todo get all style variables in one loop
     // Matches event starttime to corresponding time element to get the initial css left
     getEventLeft(event) {
       for (let hour of this.hours) {
         if (String(hour) == String(event.starttime)) {
-          console.log(document.getElementById(String(hour)).getBoundingClientRect());
+          console.log(
+            document.getElementById(String(hour)).getBoundingClientRect()
+          );
           return (
-            document.getElementById(String(hour)).getBoundingClientRect().x +
+            document.getElementById(String(hour)).getBoundingClientRect().left +
             "px"
+          );
+        }
+      }
+    },
+    getEventWidth(event) {
+      for (let hour of this.hours) {
+        if (String(hour) == String(event.starttime)) {
+          return (
+            document.getElementById(String(hour)).getBoundingClientRect()
+              .width + "px"
           );
         }
       }
@@ -288,6 +305,8 @@ export default {
   height: 100%;
   z-index: 2;
   opacity: 0.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .boxTime {
   z-index: 1;
@@ -312,5 +331,7 @@ export default {
   background-color: rgba(33, 149, 243, 0.8);
   color: white;
   z-index: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

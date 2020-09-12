@@ -1,3 +1,7 @@
+// ubiKal
+// Joe Friedlander
+// https://github.com/JoeFriedlander/ubiKal
+
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";

@@ -1,14 +1,15 @@
 {
   "name": "backend",
-  "version": "1.0.0",
-  "description": "basic node",
+  "version": "0.1.0",
+  "description": "ubikal backend",
+  "author": "Joe Friedlander",
+  "license": "ISC",
+  "private": true,
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "author": "joe",
-  "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.4"
   },

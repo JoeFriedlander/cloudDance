@@ -18,7 +18,7 @@ export default {
   methods: {
     //Reaches out to api to get a new calendar+edit ID
     newCalendar() {
-      fetch(process.env.VUE_APP_APISERVER + "api/newCalendar", {
+      fetch(process.env.VUE_APP_APISERVER + "api/calendar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
