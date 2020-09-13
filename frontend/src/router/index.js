@@ -20,8 +20,8 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/About.vue")
   },
   {
-    // will match possible calendarIDs
-    path: "/:routeCalendarID",
+    // will match possible calendar and allowEdit IDs
+    path: "/:routeID",
     component: Home
   }
 ];

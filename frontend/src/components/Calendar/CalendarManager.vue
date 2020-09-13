@@ -27,11 +27,10 @@ export default {
     };
   },
   mounted() {
-    //If there is a routeCalendarID, for example if user browses to ubikal.com/abc123 then try to get it (from GetCalendar component)
-    //Then go back to Home route, clearing the url of the calendarID
-    if (this.$route.params.routeCalendarID) {
-      calendarBus.$emit("routeEmit", this.$route.params.routeCalendarID);
-      //this.$refs.GetCalendar.loadCalendar(this.$route.params.routeCalendarID);
+    //If there is a routeID, for example if user browses to ubikal.com/abc123 then try to get it (from GetCalendar component)
+    //Then go back to Home route, clearing the url of the ID
+    if (this.$route.params.routeID) {
+      calendarBus.$emit("routeEmit", this.$route.params.routeID);
       this.$router.push({ name: "Home" });
     }
     //listen for emits from calendar buttons
@@ -41,8 +40,8 @@ export default {
     calendarBus.$on("calendarIDFoundEmit", calendar => {
       this.addCalendarToArray(calendar);
     });
-    calendarBus.$on("calendarIDNotFoundEmit", calendar => {
-      this.calendarIDNotFound(calendar);
+    calendarBus.$on("calendarIDNotFoundEmit", () => {
+      this.calendarIDNotFound();
     });
   },
   methods: {
@@ -54,8 +53,8 @@ export default {
         this.errorAlreadyAddedCalendarID = calendar.calendarID;
       }
     },
-    calendarIDNotFound(calendarID) {
-      calendarBus.$emit("errorCalendarNotFoundEmit", calendarID);
+    calendarIDNotFound() {
+      calendarBus.$emit("errorCalendarNotFoundEmit");
     },
     //checks if calendarID has already been added.
     isCalendarIDUnique(calendarID) {

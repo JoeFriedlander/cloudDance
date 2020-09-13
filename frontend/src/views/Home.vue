@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="home">
     <CalendarManager
-      routeCalendarID="this.$route.params.routeCalendarID"
+      routeCalendarID="this.$route.params.routeID"
     ></CalendarManager>
   </v-container>
 </template>

@@ -5,7 +5,7 @@
       :close-on-click="menuDelayAllowClose"
       :close-on-content-click="false"
       :position-x="x + 25"
-      :position-y="y - 25"
+      :position-y="y"
       absolute
       offset-y
     >

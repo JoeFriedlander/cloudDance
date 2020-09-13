@@ -34,8 +34,8 @@ export default {
       this.loadCalendar(calendarAndEditID);
     });
     //listen for emits from calendar manager
-    calendarBus.$on("errorCalendarNotFoundEmit", calendarAndEditID => {
-      this.setErrorCalendarNotFoundTrue(calendarAndEditID);
+    calendarBus.$on("errorCalendarNotFoundEmit", () => {
+      this.setErrorCalendarNotFoundTrue();
     });
     calendarBus.$on("errorCalendarAlreadyLoadedEmit", calendarAndEditID => {
       this.setErrorCalendarAlreadyLoadedTrue(calendarAndEditID);
@@ -60,11 +60,13 @@ export default {
           }
         }
       );
-      let data = await response.json();
-      if (response.status === 200) {
+      let status = response.status;
+      console.log(response);
+      if (status === 200) {
+        let data = await response.json();
         calendarBus.$emit("calendarIDFoundEmit", data);
       } else {
-        calendarBus.$emit("calendarIDNotFoundEmit", data.calendarID);
+        calendarBus.$emit("calendarIDNotFoundEmit");
       }
       this.calendarID = "";
     },
