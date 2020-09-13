@@ -11,7 +11,7 @@ Screenshot of how sharing links work
 ### Main tech used
 Vue.js + Vue Router + Vuetify, Node + Express, Moment, uuid
 ## Installation
-Note: The project is divided into a vue `frontend` folder and a node `backend` folder
+Note: The project is divided into a vue `frontend` folder and a node `backend` folder, each with their own package.json
 ### Prerequisites
 
 * Node v12.8.2+
@@ -19,10 +19,12 @@ Note: The project is divided into a vue `frontend` folder and a node `backend` f
 
 ### Steps
 
-##### 1. Install via npm
+##### 1. Install each via npm
 ```
-npm install ./frontend
-npm install ./backend
+cd frontend
+npm install
+cd ../backend
+npm install
 ```
 ##### 2. Create a seperate .env file for each folder and supply the values. The values I use locally are provided as an example
 
