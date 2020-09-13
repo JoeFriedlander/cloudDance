@@ -48,6 +48,10 @@ app.use(function (req, res, next) {
 
 // Load other packages
 const moment = require('moment');
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 // -----------------------------------
 // API Endpoints and Helper Functions
@@ -76,8 +80,9 @@ app.post('/api/calendar', async (req, res, next) => {
 app.delete('/api/calendar', async (req, res, next) => {
     let calendarID = req.query.calendarID;
     let allowEditID = req.body.allowEditID;
-    let authenticationValid = authenticate(calendarID, allowEditID);
-    if (authenticationValid) {
+
+    let authorizationValid = authorize(calendarID, allowEditID);
+    if (authorizationValid) {
         try {
             // If 'RETURNING' gives row(s) then something was deleted
             let result = await pool.query('DELETE FROM calendar WHERE calendarID = $1 RETURNING *', 
@@ -98,6 +103,7 @@ app.delete('/api/calendar', async (req, res, next) => {
 app.get('/api/calendar', async (req, res, next) => {
     let calendarID = req.query.calendarID;
     let allowEditID = req.query.allowEditID;
+
     // If only calendarID provided
     if(!allowEditID) {
         // Check that the calendar exists
@@ -121,9 +127,9 @@ app.get('/api/calendar', async (req, res, next) => {
     }
     // If both calendarID and allowEditID provided
     else {
-        // Check that the calendarID and allowEditID match up using the authenticate function
-        let authenticationValid = await authenticate(calendarID, allowEditID);
-        if (authenticationValid) {
+        // Check that the calendarID and allowEditID match up using the authorize function
+        let authorizationValid = await authorize(calendarID, allowEditID);
+        if (authorizationValid) {
             try {
                 let getCalendarResult = await pool.query('SELECT calendarID, allowEditID, dateTimeCreated FROM calendar WHERE calendarID = $1 AND allowEditID = $2', 
                     [calendarID, allowEditID]);
@@ -142,22 +148,28 @@ app.get('/api/calendar', async (req, res, next) => {
 
 // Creates a new event
 app.post('/api/event', async (req, res, next) => {
-    console.log('received new event ' + req.body.eventDescription)
     let calendarID = req.body.calendarID;
-    let eventDescription = req.body.eventDescription;
+    let eventDescription = DOMPurify.sanitize(req.body.eventDescription);
     let startTime = req.body.startTime;
     let endTime = req.body.endTime;
     let eventID = createID();
     let allowEditID = req.body.allowEditID;
     let currentTimeUTC = moment().utc().format('YYYY-MM-DD HH:mm:ss');
-    try {
-        let result = await pool.query('INSERT INTO event (eventID, dateTimeCreated, calendarID, eventDescription, starttime, endtime) VALUES ($1, $2, $3, $4, $5, $6)', 
-            [eventID, currentTimeUTC, calendarID, eventDescription, startTime, endTime]);
-        res.status(201).end();
+
+    let authorizationValid = await authorize(calendarID, allowEditID);
+    if (authorizationValid) {
+        try {
+            let result = await pool.query('INSERT INTO event (eventID, dateTimeCreated, calendarID, eventDescription, starttime, endtime) VALUES ($1, $2, $3, $4, $5, $6)', 
+                [eventID, currentTimeUTC, calendarID, eventDescription, startTime, endTime]);
+            res.status(201).end();
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).end();
+        }
     }
-    catch (err) {
-        console.log(err);
-        res.status(500).end();
+    else {
+        res.status(403).end();  
     }
 });
 
@@ -165,13 +177,20 @@ app.post('/api/event', async (req, res, next) => {
 app.delete('/api/event', async (req, res, next) => {
     let eventID = req.query.eventID;
     let allowEditID = req.body.allowEditID;
-    try {
-        let result = await pool.query('DELETE FROM event WHERE eventID = $1 RETURNING *', [eventID]);
-        result.rows[0] ? res.status(200).end() : res.status(404).end()
+    
+    let authorizationValid = await authorize(calendarID, allowEditID);
+    if (authorizationValid) {
+        try {
+            let result = await pool.query('DELETE FROM event WHERE eventID = $1 RETURNING *', [eventID]);
+            result.rows[0] ? res.status(200).end() : res.status(404).end()
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).end();
+        }
     }
-    catch (err) {
-        console.log(err);
-        res.status(500).end();
+    else {
+        res.status(403).end();  
     }
 });
 
@@ -196,7 +215,7 @@ app.use('/', (req, res, next) => {
 // Helper Functions
 
 // Checks that calendarID matches up with corresponding allowEditID
-async function authenticate(calendarID, allowEditID) {
+async function authorize(calendarID, allowEditID) {
     try {
         //If they don't match up then count is 0
         let result = await pool.query('SELECT COUNT(*) FROM calendar WHERE calendarID = $1 AND allowEditID = $2', [calendarID, allowEditID])

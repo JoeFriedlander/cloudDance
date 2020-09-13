@@ -215,29 +215,36 @@ export default {
         }
       }
     },
+    //only allow event creation mouse actions if allowEditID exists (will validate on backend that allowEditID matches to calendarID)
     //box the pointer was pressed down on
     pointerDownBox(e) {
-      this.pointerDownOn = e.target.id;
-      e.currentTarget.classList.add("selected");
+      if (this.allowEditID) {
+        this.pointerDownOn = e.target.id;
+        e.currentTarget.classList.add("selected");
+      }
     },
     //box that the pointer was lifted up on, means date/time selection is complete and open menu
     pointerUpBox(e) {
-      this.pointerUpOn = e.target.id;
-      this.event = "";
-      this.start = this.pointerDownOn;
-      this.end = this.pointerUpOn;
-      if (this.start > this.end) {
-        let temp = this.start;
-        this.start = this.end;
-        this.end = temp;
+      if (this.allowEditID) {
+        this.pointerUpOn = e.target.id;
+        this.event = "";
+        this.start = this.pointerDownOn;
+        this.end = this.pointerUpOn;
+        if (this.start > this.end) {
+          let temp = this.start;
+          this.start = this.end;
+          this.end = temp;
+        }
+        this.show(e);
       }
-      this.show(e);
     },
     //box the pointer was moved over
     pointerOverBox(e) {
-      //highlight only if pointer is down and isn't the pointerdown box
-      if (this.pointerDownOn && !this.showMenu) {
-        e.currentTarget.classList.add("highlighted");
+      if (this.allowEditID) {
+        //highlight only if pointer is down and isn't the pointerdown box
+        if (this.pointerDownOn && !this.showMenu) {
+          e.currentTarget.classList.add("highlighted");
+        }
       }
     },
     //if pointer goes outside event manager then cancel selection

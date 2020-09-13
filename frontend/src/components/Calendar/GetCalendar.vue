@@ -6,7 +6,7 @@
           <v-text-field
             v-bind="attrs"
             v-model="calendarID"
-            append-icon="mdi-download"
+            append-icon="mdi-magnify"
             @click:append="loadCalendar(calendarID)"
             placeholder="get ubiKal"
           />

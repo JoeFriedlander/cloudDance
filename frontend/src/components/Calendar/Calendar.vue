@@ -72,7 +72,11 @@
         <span>copied</span>
       </v-tooltip>
 
-      <v-btn @click="deleteCalendar" class="mr-8" :disabled="!allowEditID">
+      <v-btn
+        @click="deleteCalendar"
+        class="mr-8 deleteButton"
+        :disabled="!allowEditID"
+      >
         delete<v-icon class="ml-1 mr-n1">mdi-trash-can-outline</v-icon>
       </v-btn>
 
@@ -190,6 +194,9 @@ export default {
 <style scoped>
 mark {
   background-color: #f8cc46;
+}
+.deleteButton:hover {
+  color: #b80606;
 }
 /*@import url("https://fonts.googleapis.com/css2?family=Space+Mono&display=swap");
 .v-toolbar__title {
