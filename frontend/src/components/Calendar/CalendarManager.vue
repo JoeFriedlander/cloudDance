@@ -1,15 +1,12 @@
 <template>
   <v-container fluid>
-    <v-row
-      v-for="calendarAndEditID in calendarAndEditIDs"
-      :key="calendarAndEditID.calendarID"
-    >
+    <v-row v-for="calendar in calendars" :key="calendar.calendarID">
       <v-col>
         <Calendar
-          :calendarID="calendarAndEditID.calendarID"
-          :allowEditID="calendarAndEditID.allowEditID"
-          :dateTimeCreatedUTC="calendarAndEditID.dateTimeCreatedUTC"
-          @removeCalendarEmit="removeCalendarAndEditID"
+          :calendarID="calendar.calendarID"
+          :allowEditID="calendar.allowEditID"
+          :dateTimeCreatedUTC="calendar.dateTimeCreatedUTC"
+          @removeCalendarEmit="removeCalendar"
         ></Calendar>
       </v-col>
     </v-row>
@@ -26,7 +23,7 @@ export default {
   data() {
     return {
       //Array of objects made up of calendarID, allowEditID, and dateTimeCreatedUTC.
-      calendarAndEditIDs: []
+      calendars: []
     };
   },
   mounted() {
@@ -38,23 +35,23 @@ export default {
       this.$router.push({ name: "Home" });
     }
     //listen for emits from calendar buttons
-    calendarBus.$on("newCalendarEmit", calendarAndEditID => {
-      this.addCalendarToArray(calendarAndEditID);
+    calendarBus.$on("newCalendarEmit", calendar => {
+      this.addCalendarToArray(calendar);
     });
-    calendarBus.$on("calendarIDFoundEmit", calendarAndEditID => {
-      this.addCalendarToArray(calendarAndEditID);
+    calendarBus.$on("calendarIDFoundEmit", calendar => {
+      this.addCalendarToArray(calendar);
     });
-    calendarBus.$on("calendarIDNotFoundEmit", calendarAndEditID => {
-      this.calendarIDNotFound(calendarAndEditID);
+    calendarBus.$on("calendarIDNotFoundEmit", calendar => {
+      this.calendarIDNotFound(calendar);
     });
   },
   methods: {
     //Checks isCalendarIDUnique() before loading, so no duplicate calendars are added
-    addCalendarToArray(calendarAndEditID) {
-      if (this.isCalendarIDUnique(calendarAndEditID.calendarID)) {
-        this.calendarAndEditIDs.push(calendarAndEditID);
+    addCalendarToArray(calendar) {
+      if (this.isCalendarIDUnique(calendar.calendarID)) {
+        this.calendars.push(calendar);
       } else {
-        this.errorAlreadyAddedCalendarID = calendarAndEditID.calendarID;
+        this.errorAlreadyAddedCalendarID = calendar.calendarID;
       }
     },
     calendarIDNotFound(calendarID) {
@@ -63,14 +60,14 @@ export default {
     //checks if calendarID has already been added.
     isCalendarIDUnique(calendarID) {
       calendarID = calendarID.toString();
-      if (this.calendarAndEditIDs.some(e => e.calendarID === calendarID)) {
+      if (this.calendars.some(e => e.calendarID === calendarID)) {
         calendarBus.$emit("errorCalendarAlreadyLoadedEmit", calendarID);
       } else {
         return true;
       }
     },
-    removeCalendarAndEditID(calendarIDToRemove) {
-      this.calendarAndEditIDs = this.calendarAndEditIDs.filter(
+    removeCalendar(calendarIDToRemove) {
+      this.calendars = this.calendars.filter(
         e => e.calendarID !== calendarIDToRemove
       );
     }

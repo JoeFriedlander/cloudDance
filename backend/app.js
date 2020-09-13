@@ -30,7 +30,6 @@ const corsOptions = {
     origin: process.env.WEBSERVER_URL,
     credentials: true }
 const bodyParser = require('body-parser');
-const createID = require('./createID.js')
 
 const app = express();
 app.use(helmet());
@@ -45,6 +44,9 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
+
+// Load local modules
+const createID = require('./createID.js')
 
 // Load other packages
 const moment = require('moment');
@@ -81,7 +83,7 @@ app.delete('/api/calendar', async (req, res, next) => {
     let calendarID = req.query.calendarID;
     let allowEditID = req.body.allowEditID;
 
-    let authorizationValid = authorize(calendarID, allowEditID);
+    let authorizationValid = await authorize(calendarID, allowEditID);
     if (authorizationValid) {
         try {
             // If 'RETURNING' gives row(s) then something was deleted
@@ -114,9 +116,10 @@ app.get('/api/calendar', async (req, res, next) => {
                 res.status(404).end()
             } 
             // If calendar does exist, return calendar info
+            // uses 'AS' to format names with correct capitalization
             else { 
-                let getCalendarResult = await pool.query('SELECT calendarID, allowEditID, dateTimeCreated FROM calendar WHERE calendarID = $1 AND allowEditID = $2', 
-                    [calendarID, allowEditID]);
+                let getCalendarResult = await pool.query('SELECT calendarID AS "calendarID", dateTimeCreated AS "dateTimeCreatedUTC" FROM calendar WHERE calendarID = $1', 
+                    [calendarID]);
                 res.status(200).send(getCalendarResult.rows[0]);
             }
         }
@@ -128,10 +131,12 @@ app.get('/api/calendar', async (req, res, next) => {
     // If both calendarID and allowEditID provided
     else {
         // Check that the calendarID and allowEditID match up using the authorize function
+        // uses 'AS' to format names with correct capitalization
         let authorizationValid = await authorize(calendarID, allowEditID);
         if (authorizationValid) {
             try {
-                let getCalendarResult = await pool.query('SELECT calendarID, allowEditID, dateTimeCreated FROM calendar WHERE calendarID = $1 AND allowEditID = $2', 
+                let getCalendarResult = await pool.query(`SELECT calendarID AS "calendarID", allowEditID AS "allowEditID", dateTimeCreated AS "dateTimeCreatedUTC" 
+                    FROM calendar WHERE calendarID = $1 AND allowEditID = $2`, 
                     [calendarID, allowEditID]);
                 res.status(200).send(getCalendarResult.rows[0]);
             }

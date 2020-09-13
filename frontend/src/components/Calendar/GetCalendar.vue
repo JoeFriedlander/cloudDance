@@ -44,9 +44,10 @@ export default {
   methods: {
     //Reaches out to api to get an existing calendar and edit ID
     //if input includes editID, also check that matches up
-    loadCalendar(input) {
-      input = this.extractCalendarID(input);
-      fetch(
+    async loadCalendar(input) {
+      input = this.extractIDs(input);
+
+      let response = await fetch(
         process.env.VUE_APP_APISERVER +
           "api/calendar?calendarID=" +
           input.calendarID +
@@ -58,20 +59,16 @@ export default {
             "Content-Type": "application/json"
           }
         }
-      )
-        .then(response => {
-          if (response.status === 200) {
-            calendarBus.$emit("calendarIDFoundEmit", input);
-          } else {
-            calendarBus.$emit("calendarIDNotFoundEmit", input.calendarID);
-          }
-          this.calendarID = "";
-        })
-        .catch(error => {
-          console.log("error: " + error);
-        });
+      );
+      let data = await response.json();
+      if (response.status === 200) {
+        calendarBus.$emit("calendarIDFoundEmit", data);
+      } else {
+        calendarBus.$emit("calendarIDNotFoundEmit", data.calendarID);
+      }
+      this.calendarID = "";
     },
-    extractCalendarID(input) {
+    extractIDs(input) {
       let calendarID = "";
       let allowEditID = "";
       //Checks if a url like ubikal.com/abc123 or https://www.ubikal.com/abc123 is used
