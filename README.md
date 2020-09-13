@@ -64,28 +64,17 @@ CREATE TABLE event
 
 ### Local testing and development
 
-frontend:
-```
-npm run serve
-```
+frontend: `npm run serve`
 
-backend:
-```
-npm run dev
-```
+backend: `npm run dev`
 
 ### Deployment
 
-frontend:
-```
-npm run build
-```
+frontend: `npm run build`
+
 The folder `dist` will be created and ready to be served by a webserver
 
-backend:
-```
-npm start
-```
+backend:`npm start`
 
 ## Author
 Joe Friedlander
