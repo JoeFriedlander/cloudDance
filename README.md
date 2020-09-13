@@ -1,4 +1,4 @@
-# UbiKal
+# ubiKal
 Rapidly create and share schedules
 
 ## Link
