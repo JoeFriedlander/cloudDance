@@ -1,9 +1,9 @@
 {
   "name": "backend",
   "version": "0.1.0",
-  "description": "ubikal backend",
+  "description": "ubiKal backend",
   "author": "Joe Friedlander",
-  "license": "ISC",
+  "license": "MIT",
   "private": true,
   "main": "app.js",
   "scripts": {
