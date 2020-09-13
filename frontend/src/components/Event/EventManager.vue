@@ -32,13 +32,13 @@
               {{
                 moment(moment.utc(start).toDate())
                   .local()
-                  .format("h a dddd")
+                  .format("h:mm A dddd")
               }}
               -
               {{
                 moment(moment.utc(end).toDate())
                   .local()
-                  .format("h a dddd")
+                  .format("h:mm A dddd")
               }}
             </v-list-item>
           </v-list>
@@ -74,7 +74,7 @@
       {{
         moment(moment.utc(hour).toDate())
           .local()
-          .format("h a ddd")
+          .format("h:mm A ddd")
       }}
     </div>
     <v-card
@@ -199,7 +199,8 @@ export default {
             document.getElementById(String(hour)).getBoundingClientRect()
           );
           return (
-            document.getElementById(String(hour)).getBoundingClientRect().left +
+            document.getElementById(String(hour)).getBoundingClientRect().left -
+            24 +
             "px"
           );
         }
@@ -265,13 +266,13 @@ export default {
       }
     },
     //Get datetime the calendar was created.
-    //Then starting at the beginning of the previous hour, fill that then +1 hour at a time
+    //Then starting at the beginning of the previous hour, add 15 min increments
     createHours() {
+      let startCalendar = moment(this.dateTimeCreatedUTC).startOf("hour");
       for (let i = 0; i <= 23; i++) {
         this.hours.push(
-          moment(this.dateTimeCreatedUTC)
-            .add(i, "hours")
-            .startOf("hour")
+          moment(startCalendar)
+            .add(i * 5, "minutes")
             .format("YYYY-MM-DD HH:mm:ss")
         );
       }
@@ -306,20 +307,13 @@ export default {
   color: grey;
 }
 .box {
-  text-align: center;
+  text-align: left;
   padding-top: 6vh;
   min-width: 4em;
   height: 100%;
   z-index: 2;
   opacity: 0.5;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.boxTime {
-  z-index: 1;
-}
-.boxLower {
-  background-color: rgba(214, 206, 206, 0.116);
+  font-size: 0.9em;
 }
 .selected {
   background-color: rgb(76, 175, 80);
