@@ -54,7 +54,7 @@ CREATE TABLE event
 );
 ```
 
-## Local testing and development
+### Local testing and development
 
 frontend:
 ```
@@ -66,7 +66,7 @@ backend:
 npm run dev
 ```
 
-## Deployment
+### Deployment
 
 frontend:
 ```
