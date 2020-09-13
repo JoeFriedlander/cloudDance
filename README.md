@@ -88,4 +88,5 @@ Joe Friedlander
 ## Acknowledgments
 Name inspired from the book *Ubik* by Philip K. Dick
 
-## For fun: A screenshot of an early version
+### For fun: A screenshot of an early version
+![early ubiKal](https://user-images.githubusercontent.com/16908677/93009693-0c420c80-f552-11ea-98a8-2cfaad0339c1.PNG)
