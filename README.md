@@ -6,7 +6,7 @@ Rapidly create and share micro-schedules, each with their own 'allow edit' and '
 ### Website: [ubiKal.com](https://www.ubikal.com)
 
 ### How it works
-Screenshot of how sharing links work
+todo - screenshot of how sharing types of links work
 
 ### Main tech used
 Vue.js + Vue Router + Vuetify, Node + Express, Moment, uuid
@@ -28,12 +28,12 @@ npm install
 ```
 ##### 2. Create a seperate .env file for each folder and supply the values. The values I use locally are provided as an example
 
-in `./frontend/.env`
+in `frontend/.env`
 ```
 VUE_APP_WEBSERVER=localhost:8080/
 VUE_APP_APISERVER=http://localhost:3000/
 ```
-in `./backend/.env`
+in `backend/.env`
 ```
 DATABASE_URL=postgres://postgres:yourPostgresPasswordHere@localhost:5432/ubikal
 DATABASE_DOESNT_USE_SSL=true
