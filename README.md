@@ -5,9 +5,7 @@ Rapidly create and share schedules
 
 Screenshot of how sharing links work
 
-##
-
-### Tech used
+### Main Tech used
 Vue.js + Vue Router + Vuetify, Node + Express, Moment, uuid
 ## Installation
 Note: The project is divided into a vue `frontend` folder and a node `backend` folder
