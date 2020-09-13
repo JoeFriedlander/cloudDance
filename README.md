@@ -1,7 +1,7 @@
 # ubiKal
 ![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fwww.ubikal.com) ![GitHub](https://img.shields.io/github/license/JoeFriedlander/ubiKal?color=rgb%2833%2C%20150%2C%20243%29)
 
-Rapidly create and share micro-schedules, each with their own 'edit' and 'view only' link. Load any number of independent schedules for real time coordination without signins.
+Rapidly create and share micro-schedules, each with their own 'allow edit' and 'view only' link. Load any number of independent schedules for real time coordination without signins.
 
 ### Website: [ubiKal.com](https://www.ubikal.com)
 
