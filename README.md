@@ -1,11 +1,12 @@
 # ubiKal
 Rapidly create and share schedules
 
-### [ubikal.com](https://www.ubikal.com)
+### Link: [ubikal.com](https://www.ubikal.com)
 
+### How it works
 Screenshot of how sharing links work
 
-### Main Tech used
+### Main tech used
 Vue.js + Vue Router + Vuetify, Node + Express, Moment, uuid
 ## Installation
 Note: The project is divided into a vue `frontend` folder and a node `backend` folder
