@@ -70,7 +70,6 @@
       @pointerover="pointerOverBox"
     >
       <br />
-      <br />
       {{
         moment(moment.utc(hour).toDate())
           .local()
@@ -110,12 +109,15 @@ export default {
       pointerDownOn: "",
       //box the pointer brought up on
       pointerUpOn: "",
-      //used in menu describing event
+      //used in menu describing event. Note that 'end' will be one box forward compared to 'pointerUpOn',
+      //because 'end' represents the endtime of the box, and pointerUpOn stores the begin time.
       start: "",
       end: "",
       event: "",
       //hours used for schedule
       hours: [],
+      //increment in minutes for each slot in the schedule
+      minuteIncrement: 5,
       //list of events
       events: [],
       //show menu bool
@@ -195,9 +197,6 @@ export default {
     getEventLeft(event) {
       for (let hour of this.hours) {
         if (String(hour) == String(event.starttime)) {
-          console.log(
-            document.getElementById(String(hour)).getBoundingClientRect()
-          );
           return (
             document.getElementById(String(hour)).getBoundingClientRect().left -
             24 +
@@ -206,12 +205,21 @@ export default {
         }
       }
     },
+    //Gets width by subtracting endtime from starttime for total time.
+    //Then divides by the minute increment to find how many boxes forward it should go
     getEventWidth(event) {
+      let totalEventTime = moment(event.endtime).diff(
+        event.starttime,
+        "minutes"
+      );
+      let totalEventBoxes = totalEventTime / this.minuteIncrement;
       for (let hour of this.hours) {
         if (String(hour) == String(event.starttime)) {
           return (
             document.getElementById(String(hour)).getBoundingClientRect()
-              .width + "px"
+              .width *
+              totalEventBoxes +
+            "px"
           );
         }
       }
@@ -230,7 +238,12 @@ export default {
         this.pointerUpOn = e.target.id;
         this.event = "";
         this.start = this.pointerDownOn;
-        this.end = this.pointerUpOn;
+        //Note that 'end' will be one box forward compared to 'pointerUpOn',
+        //because 'end' represents the endtime of the box, and pointerUpOn stores the begin time.
+        this.end = moment
+          .utc(this.pointerUpOn)
+          .add(this.minuteIncrement, "minutes")
+          .format("YYYY-MM-DD HH:mm:ss");
         if (this.start > this.end) {
           let temp = this.start;
           this.start = this.end;
@@ -266,13 +279,13 @@ export default {
       }
     },
     //Get datetime the calendar was created.
-    //Then starting at the beginning of the previous hour, add 15 min increments
+    //Then starting at the beginning of the previous hour, add x minute increments
     createHours() {
       let startCalendar = moment(this.dateTimeCreatedUTC).startOf("hour");
       for (let i = 0; i <= 23; i++) {
         this.hours.push(
           moment(startCalendar)
-            .add(i * 5, "minutes")
+            .add(i * this.minuteIncrement, "minutes")
             .format("YYYY-MM-DD HH:mm:ss")
         );
       }
