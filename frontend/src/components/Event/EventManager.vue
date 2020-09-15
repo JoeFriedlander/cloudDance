@@ -1,5 +1,9 @@
 <template>
-  <div id="eventManager" :style="{ position: 'relative' }">
+  <div
+    id="eventManager"
+    @pointerleave="pointerOutEventManager"
+    :style="{ position: 'relative' }"
+  >
     <v-menu
       v-model="showMenu"
       :close-on-click="menuDelayAllowClose"
@@ -68,6 +72,7 @@
       @pointerdown="pointerDownBox"
       @pointerup="pointerUpBox"
       @pointerover="pointerOverBox"
+      @pointerleave="pointerLeaveBox"
     >
       {{
         moment(moment.utc(hour).toDate())
@@ -104,6 +109,9 @@ export default {
   props: ["calendarID", "allowEditID", "dateTimeCreatedUTC"],
   data() {
     return {
+      // -----------------------------------
+      // Event variables
+      // -----------------------------------
       //box the pointer first brought down on
       pointerDownOn: "",
       //box the pointer brought up on
@@ -113,26 +121,32 @@ export default {
       start: "",
       end: "",
       event: "",
-      //hours used for schedule
-      hours: [],
-      //increment in minutes for each slot in the schedule
-      minuteIncrement: 5,
+      //when mouse is moved out of a box
+      pointerJustLeft: "",
       //list of events
       events: [],
       //show menu bool
       showMenu: false,
       //Prevents menu from closing automatically when pointer lifted up
       menuDelayAllowClose: false,
+      //Menu positioning
       x: 0,
-      y: 0
+      y: 0,
+      // -----------------------------------
+      // Time variables
+      // -----------------------------------
+      //hours used for schedule
+      hours: [],
+      //increment in minutes for each slot in the schedule
+      minuteIncrement: 5
     };
   },
   mounted: function() {
     this.createHours();
     //inefficient way to keep events updated :(
     setInterval(this.loadEvents, 1000);
-    //Issue with events not matching up to time position on window resize.
-    //Seems the event element position is not being recalculated, so do it here
+    //Issue with event element position not being recalculated on window resize
+    //Possibly each event element's position should be a computed property instead
     window.addEventListener("resize", () => {
       this.$forceUpdate();
     });
@@ -146,6 +160,94 @@ export default {
     }
   },
   methods: {
+    // -----------------------------------
+    // Clicking and Dragging Methods
+    // Only allow event creation mouse actions if allowEditID exists (will also validate on backend that allowEditID matches to calendarID)
+    // -----------------------------------
+    //
+    //box the pointer was pressed down on
+    pointerDownBox(e) {
+      if (this.allowEditID) {
+        this.resetSelection();
+        this.pointerDownOn = e.target.id;
+        e.currentTarget.classList.add("selected");
+      }
+    },
+    //box that the pointer was lifted up on, means date/time selection is complete and open menu
+    pointerUpBox(e) {
+      if (this.allowEditID) {
+        this.pointerUpOn = e.target.id;
+        this.event = "";
+        this.start = this.pointerDownOn;
+        this.end = this.pointerUpOn;
+        if (this.start <= this.end) {
+          this.start = this.pointerDownOn;
+          this.end = this.pointerUpOn;
+          //If cursor is dragged back instead of forward, switch start and end
+        } else {
+          let temp = this.start;
+          this.start = this.end;
+          this.end = temp;
+        }
+        //Note that 'end' will be one box forward compared to 'pointerUpOn',
+        //because 'end' represents the endtime of the box, and pointerUpOn stores the begin time.
+        this.end = moment
+          .utc(this.end)
+          .add(this.minuteIncrement, "minutes")
+          .format("YYYY-MM-DD HH:mm:ss");
+        //show menu only if there is a start. fixes issue if mousedown outside event manager and mouseup inside it
+        if (this.start) this.show(e);
+      }
+    },
+    //box the pointer was moved over while being dragged
+    pointerOverBox(e) {
+      if (this.allowEditID) {
+        //highlight only if the box isn't the pointerdown box (don't overwrite existing pointerdown select class)
+        if (
+          this.pointerDownOn &&
+          !this.showMenu &&
+          e.target.id != this.pointerDownOn
+        ) {
+          e.currentTarget.classList.add("highlighted");
+        }
+        //If this box is closer to pointerDownBox than the one the mouse just exited, remove that other box's highlight
+        let currentBoxDistance = Math.abs(
+          moment(this.pointerDownOn).diff(e.target.id, "minutes")
+        );
+        let justLeftBoxDistance = Math.abs(
+          moment(this.pointerDownOn).diff(this.pointerJustLeft, "minutes")
+        );
+        if (currentBoxDistance < justLeftBoxDistance && !this.showMenu) {
+          document
+            .getElementById(String(this.pointerJustLeft))
+            .classList.remove("highlighted");
+        }
+      }
+    },
+    pointerLeaveBox(e) {
+      this.pointerJustLeft = e.target.id;
+    },
+    //if pointer goes outside event manager and menu isn't active then reset selection
+    pointerOutEventManager() {
+      if (!this.showMenu) this.resetSelection();
+    },
+    //resets selected time elements
+    resetSelection() {
+      this.pointerDownOn = "";
+      this.pointerUpOn = "";
+      this.dragDirection = "none";
+      let selectedEls = document.getElementsByClassName("selected");
+      while (selectedEls.length) {
+        selectedEls[0].classList.remove("selected");
+      }
+      let highlightedEls = document.getElementsByClassName("highlighted");
+      while (highlightedEls.length) {
+        highlightedEls[0].classList.remove("highlighted");
+      }
+    },
+    // -----------------------------------
+    // Menu and event submission
+    // -----------------------------------
     //shows menu
     show(e) {
       this.menuDelayAllowClose = false;
@@ -157,9 +259,20 @@ export default {
         this.menuDelayAllowClose = true;
       }, 250);
     },
-    removeEventID() {
-      //send delete
+    //when form is submitted emit new event
+    newEvent() {
+      //emit new event
+      eventBus.$emit("newEventEmit", {
+        calendarID: this.calendarID,
+        event: this.event,
+        allowEditID: this.allowEditID,
+        start: this.start,
+        end: this.end
+      });
     },
+    // -----------------------------------
+    // Event loading, deleting, and rendering
+    // -----------------------------------
     loadEvents() {
       fetch(
         process.env.VUE_APP_APISERVER +
@@ -228,65 +341,12 @@ export default {
         }
       }
     },
-    //only allow event creation mouse actions if allowEditID exists (will validate on backend that allowEditID matches to calendarID)
-    //box the pointer was pressed down on
-    pointerDownBox(e) {
-      if (this.allowEditID) {
-        this.pointerDownOn = e.target.id;
-        e.currentTarget.classList.add("selected");
-      }
+    removeEventID() {
+      //send delete
     },
-    //box that the pointer was lifted up on, means date/time selection is complete and open menu
-    pointerUpBox(e) {
-      if (this.allowEditID) {
-        this.pointerUpOn = e.target.id;
-        this.event = "";
-        this.start = this.pointerDownOn;
-        this.end = this.pointerUpOn;
-        if (this.start <= this.end) {
-          this.start = this.pointerDownOn;
-          this.end = this.pointerUpOn;
-          //If cursor is dragged back instead of forward, switch start and end
-        } else {
-          let temp = this.start;
-          this.start = this.end;
-          this.end = temp;
-        }
-        //Note that 'end' will be one box forward compared to 'pointerUpOn',
-        //because 'end' represents the endtime of the box, and pointerUpOn stores the begin time.
-        this.end = moment
-          .utc(this.end)
-          .add(this.minuteIncrement, "minutes")
-          .format("YYYY-MM-DD HH:mm:ss");
-        this.show(e);
-      }
-    },
-    //box the pointer was moved over
-    pointerOverBox(e) {
-      if (this.allowEditID) {
-        //highlight only if pointer is down and isn't the pointerdown box
-        if (this.pointerDownOn && !this.showMenu) {
-          e.currentTarget.classList.add("highlighted");
-        }
-      }
-    },
-    //if pointer goes outside event manager then cancel selection
-    //pointerOutEventManager() {
-    //  this.resetSelection();
-    //},
-    //resets selected time elements
-    resetSelection() {
-      this.pointerDownOn = "";
-      this.pointerUpOn = "";
-      let selectedEls = document.getElementsByClassName("selected");
-      while (selectedEls.length) {
-        selectedEls[0].classList.remove("selected");
-      }
-      let highlightedEls = document.getElementsByClassName("highlighted");
-      while (highlightedEls.length) {
-        highlightedEls[0].classList.remove("highlighted");
-      }
-    },
+    // -----------------------------------
+    // Time Creation
+    // -----------------------------------
     //Get datetime the calendar was created.
     //Then starting at the beginning of the previous hour, add x minute increments
     createHours() {
@@ -298,17 +358,6 @@ export default {
             .format("YYYY-MM-DD HH:mm:ss")
         );
       }
-    },
-    //when form is submitted emit new event
-    newEvent() {
-      //emit new event
-      eventBus.$emit("newEventEmit", {
-        calendarID: this.calendarID,
-        event: this.event,
-        allowEditID: this.allowEditID,
-        start: this.start,
-        end: this.end
-      });
     }
   },
   components: {
