@@ -61,7 +61,6 @@ export default {
         }
       );
       let status = response.status;
-      console.log(response);
       if (status === 200) {
         let data = await response.json();
         calendarBus.$emit("calendarIDFoundEmit", data);

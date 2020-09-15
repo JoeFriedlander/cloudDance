@@ -69,7 +69,6 @@
       @pointerup="pointerUpBox"
       @pointerover="pointerOverBox"
     >
-      <br />
       {{
         moment(moment.utc(hour).toDate())
           .local()
@@ -238,17 +237,22 @@ export default {
         this.pointerUpOn = e.target.id;
         this.event = "";
         this.start = this.pointerDownOn;
-        //Note that 'end' will be one box forward compared to 'pointerUpOn',
-        //because 'end' represents the endtime of the box, and pointerUpOn stores the begin time.
-        this.end = moment
-          .utc(this.pointerUpOn)
-          .add(this.minuteIncrement, "minutes")
-          .format("YYYY-MM-DD HH:mm:ss");
-        if (this.start > this.end) {
+        this.end = this.pointerUpOn;
+        if (this.start <= this.end) {
+          this.start = this.pointerDownOn;
+          this.end = this.pointerUpOn;
+          //If cursor is dragged back instead of forward, switch start and end
+        } else {
           let temp = this.start;
           this.start = this.end;
           this.end = temp;
         }
+        //Note that 'end' will be one box forward compared to 'pointerUpOn',
+        //because 'end' represents the endtime of the box, and pointerUpOn stores the begin time.
+        this.end = moment
+          .utc(this.end)
+          .add(this.minuteIncrement, "minutes")
+          .format("YYYY-MM-DD HH:mm:ss");
         this.show(e);
       }
     },
