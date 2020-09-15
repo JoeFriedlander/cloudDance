@@ -131,6 +131,11 @@ export default {
     this.createHours();
     //inefficient way to keep events updated :(
     setInterval(this.loadEvents, 1000);
+    //Issue with events not matching up to time position on window resize.
+    //Seems the event element position is not being recalculated, so do it here
+    window.addEventListener("resize", () => {
+      this.$forceUpdate();
+    });
   },
   watch: {
     //when showMenu changes to false (menu closes) then reset the selected elements
@@ -325,7 +330,7 @@ export default {
 }
 .box {
   text-align: left;
-  padding-top: 6vh;
+  padding-top: 8vh;
   min-width: 4em;
   height: 100%;
   z-index: 2;
@@ -344,7 +349,7 @@ export default {
   background-color: "blue";
 }
 .event {
-  margin-top: 6vh;
+  margin-top: 2vh;
   opacity: 0.8;
   background-color: rgba(33, 149, 243, 0.8);
   color: white;
