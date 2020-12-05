@@ -1,15 +1,20 @@
 # ubiKal
 ![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fwww.ubikal.com) ![GitHub](https://img.shields.io/github/license/JoeFriedlander/ubiKal?color=rgb%2833%2C%20150%2C%20243%29)
 
-* Quickly create and share tiny schedules
-* Login-free authorization with 'View' and 'Edit' links
-* Realtime collaboration inside a one hour block
+Quickly create and share tiny schedules
+
+Use 'View' and 'Edit' links for login-free authorization
+
+Collaborate in realtime with one hour blocks
 
 ### Website: [ubiKal.com](https://www.ubikal.com)
 Desktop/Laptop only (not mobile ready yet)
 
 ### Main tech used
-Vue.js + Vue Router + Vuetify, Node + Express, Moment, uuid
+Vue.js + Vue Router + Vuetify
+Node + Express
+Moment
+uuid
 ## Installation
 Note: The project is divided into a vue `frontend` folder and a node `backend` folder, each with their own package.json
 ### Prerequisites
@@ -26,7 +31,7 @@ npm install
 cd ../backend
 npm install
 ```
-##### 2. Create a seperate .env file for each folder and supply the values. The values I use locally are provided as an example
+##### 2. Create a seperate .env file for each folder and supply the values. Below are the values I use in my development environment as an example
 
 in `frontend/.env`
 ```
@@ -72,7 +77,7 @@ backend: `npm run dev`
 
 frontend: `npm run build`
 
-The folder `dist` will be created and ready to be served by a webserver
+The folder `dist` will be created and ready to be served
 
 backend:`npm start`
 
