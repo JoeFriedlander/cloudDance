@@ -5,7 +5,7 @@ Quickly create and share tiny schedules
 
 Use 'View' and 'Edit' links for login-free authorization
 
-Collaborate in realtime with one hour blocks
+Collaborate in realtime
 
 ### Website: [ubiKal.com](https://www.ubikal.com)
 Desktop/Laptop only (not mobile ready yet)
