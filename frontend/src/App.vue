@@ -5,7 +5,7 @@
       <NewCalendar class="mr-12" />
       <GetCalendar class="mt-6" />
       <v-spacer></v-spacer>
-      <a href="https://github.com/JoeFriedlander/ubiKal">
+      <a href="https://github.com/JoeFriedlander/cloudDance">
         <img src="@/assets/GitHub-Mark-32px.png" class="mt-2" />
       </a>
       <!-- <v-btn to="/">Home</v-btn>

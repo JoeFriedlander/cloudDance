@@ -1,6 +1,6 @@
-// ubiKal
+// CloudDance Calendar
 // Joe Friedlander
-// https://github.com/JoeFriedlander/ubiKal
+// https://github.com/JoeFriedlander/cloudDance
 
 import Vue from "vue";
 import App from "./App.vue";

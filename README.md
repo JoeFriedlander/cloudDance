@@ -1,20 +1,17 @@
 # CloudDance Calendar
-![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fcloud.dance.com) ![GitHub](https://img.shields.io/github/license/JoeFriedlander/cloudDance?color=rgb%2833%2C%20150%2C%20243%29)
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fcloud.dance) ![GitHub](https://img.shields.io/github/license/joefriedlander/clouddance?color=g)
 
-Quickly create and share tiny schedules
-
-Use 'View' and 'Edit' links for login-free authorization
-
-Collaborate in realtime
+Rapidly create and securely share schedules for real-time coordination and login-free access control 
 
 ### Website: [cloud.dance](https://cloud.dance)
 Desktop/Laptop only (not mobile ready yet)
 
 ### Main tech used
-Vue.js + Vue Router + Vuetify
-Node + Express
-Moment
-uuid
+Vue.js, Vue Router, Vuetify
+
+Node, Express
+
+Moment and uuid
 ## Installation
 Note: The project is divided into a vue `frontend` folder and a node `backend` folder, each with their own package.json
 ### Prerequisites

@@ -63,7 +63,7 @@ const DOMPurify = createDOMPurify(window);
 
 // Creates a new calendar
 app.post('/api/calendar', async (req, res, next) => {
-    let calendarID = 'ubik' + createID().substring(4);
+    let calendarID = 'cal' + createID().substring(3);
     let allowEditID = 'edit' + createID().substring(4)
     let currentTimeUTC = moment().utc().format('YYYY-MM-DD HH:mm:ss');
     try {
