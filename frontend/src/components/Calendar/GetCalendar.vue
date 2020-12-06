@@ -8,7 +8,7 @@
             v-model="calendarID"
             append-icon="mdi-magnify"
             @click:append="loadCalendar(calendarID)"
-            placeholder="get ubiKal"
+            placeholder="get"
           />
         </template>
         <span>{{ errorMessage }}</span>
@@ -72,10 +72,10 @@ export default {
     extractIDs(input) {
       let calendarID = "";
       let allowEditID = "";
-      //Checks if a url like ubikal.com/abc123 or https://www.ubikal.com/abc123 is used
+      //Checks if a url like cloud.dance/abc123 or https://cloud.dance/abc123 is used
       //In addition to supporting regular calendarIDs like abc123
       input = input.toString().trim();
-      //remove trailing slash e.g https://www.ubikal.com/abc123/
+      //remove trailing slash e.g https://cloud.dance/abc123/
       if (input.slice(-1) === "/") {
         input = input.slice(0, -1);
       }
@@ -94,7 +94,7 @@ export default {
       return { calendarID: input, allowEditID: "" };
     },
     setErrorCalendarNotFoundTrue: function() {
-      this.errorMessage = "error 82015 - ubiKal not found";
+      this.errorMessage = "error 82015 - calendar not found";
       this.activeError = true;
       setTimeout(this.setErrorCalendarNotFoundFalse, 2500);
     },
@@ -102,7 +102,7 @@ export default {
       this.activeError = false;
     },
     setErrorCalendarAlreadyLoadedTrue: function() {
-      this.errorMessage = "error 49148.2(b) - ubiKal already loaded";
+      this.errorMessage = "error 49148.2(b) - calendar already loaded";
       this.activeError = true;
       setTimeout(this.setErrorCalendarAlreadyLoadedFalse, 4000);
     },

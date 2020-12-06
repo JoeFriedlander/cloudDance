@@ -1,8 +1,8 @@
 <template>
   <div class="about">
     <h2>
-      <a href="https://www.github.com/JoeFriedlander/ubiKal">
-        github.com/JoeFriedlander/ubiKal
+      <a href="https://www.github.com/JoeFriedlander/cloudDance">
+        github.com/JoeFriedlander/cloudDance
       </a>
     </h2>
   </div>

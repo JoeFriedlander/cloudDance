@@ -27,7 +27,7 @@ export default {
     };
   },
   mounted() {
-    //If there is a routeID, for example if user browses to ubikal.com/abc123 then try to get it (from GetCalendar component)
+    //If there is a routeID, for example if user browses to cloud.dance/abc123 then try to get it (from GetCalendar component)
     //Then go back to Home route, clearing the url of the ID
     if (this.$route.params.routeID) {
       calendarBus.$emit("routeEmit", this.$route.params.routeID);

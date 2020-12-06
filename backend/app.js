@@ -1,6 +1,6 @@
-// ubiKal
+// CloudDance Calendar
 // Joe Friedlander
-// https://github.com/JoeFriedlander/ubiKal
+// https://github.com/JoeFriedlander/cloudDance
 
 // -----------------------------------
 // Settings and Requires

@@ -1,5 +1,5 @@
-# ubiKal
-![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fwww.ubikal.com) ![GitHub](https://img.shields.io/github/license/JoeFriedlander/ubiKal?color=rgb%2833%2C%20150%2C%20243%29)
+# CloudDance Calendar
+![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fcloud.dance.com) ![GitHub](https://img.shields.io/github/license/JoeFriedlander/cloudDance?color=rgb%2833%2C%20150%2C%20243%29)
 
 Quickly create and share tiny schedules
 
@@ -7,7 +7,7 @@ Use 'View' and 'Edit' links for login-free authorization
 
 Collaborate in realtime
 
-### Website: [ubiKal.com](https://www.ubikal.com)
+### Website: [cloud.dance](https://cloud.dance)
 Desktop/Laptop only (not mobile ready yet)
 
 ### Main tech used
@@ -40,15 +40,15 @@ VUE_APP_APISERVER=http://localhost:3000/
 ```
 in `backend/.env`
 ```
-DATABASE_URL=postgres://postgres:yourPostgresPasswordHere@localhost:5432/ubikal
+DATABASE_URL=postgres://postgres:yourPostgresPasswordHere@localhost:5432/cloudDance
 DATABASE_DOESNT_USE_SSL=true
 WEBSERVER_URL=http://localhost:8080
 ```
 
 ##### 3. Start PostgreSQL, connect to it with `psql -U postgres` and paste in the below to setup the database
 ```
-CREATE DATABASE -u postgres ubikal;
-\connect ubikal;
+CREATE DATABASE -u postgres cloudDance;
+\connect cloudDance;
 CREATE TABLE calendar
 ( 
   calendarID varchar(32) PRIMARY KEY NOT NULL,
@@ -84,8 +84,5 @@ backend:`npm start`
 ## Author
 Joe Friedlander
 
-## Acknowledgments
-Name inspired from the book *Ubik* by Philip K. Dick
-
 ### For fun: A screenshot of an early version
-![early ubiKal](https://user-images.githubusercontent.com/16908677/93009693-0c420c80-f552-11ea-98a8-2cfaad0339c1.PNG)
+![early cloudDance](https://user-images.githubusercontent.com/16908677/93009693-0c420c80-f552-11ea-98a8-2cfaad0339c1.PNG)

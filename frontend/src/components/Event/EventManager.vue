@@ -82,7 +82,7 @@
     </div>
     <v-card
       v-for="event in events"
-      class="event"
+      class="event elevation-8"
       color="info"
       dark
       :key="event.eventid"
@@ -93,6 +93,16 @@
         position: 'absolute'
       }"
     >
+
+        <v-spacer />
+        <v-btn
+          @click="deleteCalendar"
+          class="deleteButton"
+          :disabled="!allowEditID"
+        >
+          <v-icon>mdi-dots-vertical</v-icon>
+        </v-btn>
+
       {{ event.eventdescription }}
     </v-card>
     <NewEvent></NewEvent>

@@ -22,13 +22,6 @@
           <mark>{{ webserver + calendarID }}</mark>
         </span>
       </v-toolbar-title>
-      <!--
-      <v-btn v-show="!allowEditID" color="indigo" dark class="mr-8">
-        Warning: BASIC ubiKal detected - Click here to upgrade<v-icon
-          class="ml-1 mr-n1"
-          >mdi-arrow-up-bold</v-icon
-        > 
-      </v-btn> -->
       <v-tooltip v-model="copiedTooltipCalendarID" top>
         <template v-slot:activator="{ attrs }">
           <v-btn
