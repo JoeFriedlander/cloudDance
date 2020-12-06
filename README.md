@@ -1,7 +1,7 @@
 # CloudDance Calendar
-![Website](https://img.shields.io/website?url=https%3A%2F%2Fcloud.dance) ![GitHub](https://img.shields.io/github/license/joefriedlander/clouddance?color=g)
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fcloud.dance) ![GitHub](https://img.shields.io/github/license/joefriedlander/clouddance?color=blue)
 
-Rapidly create and securely share schedules for real-time coordination and login-free access control 
+Rapidly create and securely share calendars for real-time coordination and login-free access control 
 
 ### Website: [cloud.dance](https://cloud.dance)
 Desktop/Laptop only (not mobile ready yet)
