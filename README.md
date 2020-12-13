@@ -1,7 +1,7 @@
 # CloudDance Calendar
 ![Website](https://img.shields.io/website?url=https%3A%2F%2Fcloud.dance) ![GitHub](https://img.shields.io/github/license/joefriedlander/clouddance?color=blue)
 
-Rapidly create and securely share calendars for real-time coordination and login-free access control 
+Rapidly create and securely share tiny calendars for real-time coordination and login-free access control 
 
 ### Website: [cloud.dance](https://cloud.dance)
 Desktop/Laptop only (not mobile ready yet)
@@ -28,7 +28,7 @@ npm install
 cd ../backend
 npm install
 ```
-##### 2. Create a seperate .env file for each folder and supply the values. Below are the values I use in my development environment as an example
+##### 2. Create seperate .env files for the two folders and supply the values. Below are values for a development environment. For example, in production the DB connection uses ssl, but in development it doesn't so DATABASE_USES_SSL is set to false
 
 in `frontend/.env`
 ```
@@ -37,15 +37,15 @@ VUE_APP_APISERVER=http://localhost:3000/
 ```
 in `backend/.env`
 ```
-DATABASE_URL=postgres://postgres:yourPostgresPasswordHere@localhost:5432/cloudDance
-DATABASE_DOESNT_USE_SSL=true
+DATABASE_URL=postgres://postgres:yourPostgresPasswordHere@localhost:5432/clouddance
+DATABASE_USES_SSL=false
 WEBSERVER_URL=http://localhost:8080
 ```
 
-##### 3. Start PostgreSQL, connect to it with `psql -U postgres` and paste in the below to setup the database
+##### 3. Start PostgreSQL, connect to it with the command `psql -U postgres`, and paste the below to setup the database
 ```
-CREATE DATABASE -u postgres cloudDance;
-\connect cloudDance;
+CREATE DATABASE clouddance;
+\connect clouddance;
 CREATE TABLE calendar
 ( 
   calendarID varchar(32) PRIMARY KEY NOT NULL,
@@ -72,9 +72,7 @@ backend: `npm run dev`
 
 ### Deployment
 
-frontend: `npm run build`
-
-The folder `dist` will be created and ready to be served
+frontend: `npm run build` . The folder `dist` will be created and ready to be served
 
 backend:`npm start`
 

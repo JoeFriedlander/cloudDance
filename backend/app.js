@@ -13,11 +13,12 @@ require('dotenv').config()
 const pg = require('pg')
 // Fix to stop auto-convert timestamps on select
 pg.types.setTypeParser(1114, function(stringValue) {return stringValue;});
-//connection string
+// Connection string
 const connectionString = process.env.DATABASE_URL;
-// If the DB doesn't use SSL then create the pool without referencing ssl
-if (process.env.DATABASE_DOESNT_USE_SSL) {
-    pool = new pg.Pool({connectionString: connectionString})}
+// Handle Postgres SSL settings
+if (process.env.DATABASE_USES_SSL) {
+    pool = new pg.Pool({connectionString: connectionString})
+}
 else {
     pool = new pg.Pool({connectionString: connectionString, ssl: {rejectUnauthorized: false}})
 }
