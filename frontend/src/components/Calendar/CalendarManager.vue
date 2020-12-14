@@ -1,15 +1,17 @@
 <template>
   <v-container fluid>
-    <v-row v-for="calendar in calendars" :key="calendar.calendarID">
-      <v-col>
-        <Calendar
-          :calendarID="calendar.calendarID"
-          :allowEditID="calendar.allowEditID"
-          :dateTimeCreatedUTC="calendar.dateTimeCreatedUTC"
-          @removeCalendarEmit="removeCalendar"
-        ></Calendar>
-      </v-col>
-    </v-row>
+    <transition-group name="list" tag="div">
+      <v-row v-for="calendar in calendars" :key="calendar.calendarID">
+        <v-col>
+          <Calendar
+            :calendarID="calendar.calendarID"
+            :allowEditID="calendar.allowEditID"
+            :dateTimeCreatedUTC="calendar.dateTimeCreatedUTC"
+            @removeCalendarEmit="removeCalendar"
+          ></Calendar>
+        </v-col>
+      </v-row>
+    </transition-group>
   </v-container>
 </template>
 
@@ -79,4 +81,17 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.list-enter, .list-leave-to {
+  opacity: 0;
+}
+.list-enter-active{
+  transition: all .8s;
+}
+.list-leave-active {
+  position: absolute;
+}
+.list-move {
+  transition: transform 1s;
+}
+</style>

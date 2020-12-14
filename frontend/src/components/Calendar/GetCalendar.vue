@@ -8,7 +8,7 @@
             v-model="calendarID"
             append-icon="mdi-magnify"
             @click:append="loadCalendar(calendarID)"
-            placeholder="get"
+            placeholder="get calendar"
           />
         </template>
         <span>{{ errorMessage }}</span>
