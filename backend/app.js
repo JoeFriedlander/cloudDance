@@ -64,8 +64,8 @@ const DOMPurify = createDOMPurify(window);
 
 // Creates a new calendar
 app.post('/api/calendar', async (req, res, next) => {
-    let calendarID = 'cal' + createID().substring(3);
-    let allowEditID = 'edit' + createID().substring(4)
+    let calendarID = 'cal' + createID().substring(13);
+    let allowEditID = 'edit' + createID().substring(14)
     let currentTimeUTC = moment().utc().format('YYYY-MM-DD HH:mm:ss');
     try {
         let result = await pool.query('INSERT INTO calendar(calendarID, allowEditID, dateTimeCreated) VALUES($1, $2, $3)', 
