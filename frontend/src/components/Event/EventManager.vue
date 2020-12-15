@@ -358,9 +358,50 @@ export default {
     // Time Creation
     // -----------------------------------
     //Get datetime the calendar was created.
-    //Then starting at the beginning of the previous hour, add x minute increments
+    //Then starting at the floor of the nearest 5 minutes, add x minute increments
     createHours() {
-      let startCalendar = moment(this.dateTimeCreatedUTC).startOf("hour");
+      let minute = moment(this.dateTimeCreatedUTC).minutes()
+      let startMinute = 0;
+      if (minute < 5) {
+        startMinute = 0;
+      } 
+      else if (minute < 10) {
+        startMinute = 5;
+      }
+      else if (minute < 15) {
+        startMinute = 10;
+      }
+      else if (minute < 20) {
+        startMinute = 15;
+      }
+      else if (minute < 25) {
+        startMinute = 20;
+      }
+      else if (minute < 30) {
+        startMinute = 25;
+      }
+      else if (minute < 35) {
+        startMinute = 30;
+      }
+      else if (minute < 40) {
+        startMinute = 35;
+      }
+      else if (minute < 45) {
+        startMinute = 40;
+      }
+      else if (minute < 50) {
+        startMinute = 45;
+      }
+      else if (minute < 55) {
+        startMinute = 50;
+      }
+      else if (minute < 60) {
+        startMinute = 55;
+      }
+
+      console.log("minute" + minute)
+      console.log("startminute" + startMinute)
+      let startCalendar = moment(this.dateTimeCreatedUTC).set({minute: startMinute});
       for (let i = 0; i <= 23; i++) {
         this.hours.push(
           moment(startCalendar)

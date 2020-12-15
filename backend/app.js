@@ -63,7 +63,6 @@ const DOMPurify = createDOMPurify(window);
 // API Endpoints
 
 // Creates a new calendar
-// todo have start time round to nearest 5 min
 app.post('/api/calendar', async (req, res, next) => {
     let calendarID = 'cal' + createID().substring(13);
     let allowEditID = 'edit' + createID().substring(14)
