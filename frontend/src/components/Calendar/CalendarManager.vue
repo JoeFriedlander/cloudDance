@@ -89,7 +89,7 @@ export default {
   transition: all .8s;
 }
 .list-leave-active {
-  position: absolute;
+  position: fixed;
 }
 .list-move {
   transition: transform 1s;

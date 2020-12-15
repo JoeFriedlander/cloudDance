@@ -1,5 +1,7 @@
 # CloudDance Calendar
-![Website](https://img.shields.io/website?url=https%3A%2F%2Fcloud.dance) ![GitHub](https://img.shields.io/github/license/joefriedlander/clouddance?color=blue)
+![WebsiteStatus](https://img.shields.io/website?url=https%3A%2F%2Fcloud.dance) ![LicenseStatus](https://img.shields.io/badge/license-MIT-blue)
+
+![cloudDance logo](https://user-images.githubusercontent.com/16908677/102152414-f1c64a80-3e42-11eb-9d5d-3a8b390ccca9.png)
 
 Rapidly create and securely share tiny calendars for real-time coordination and login-free access control 
 
