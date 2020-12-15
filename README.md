@@ -9,11 +9,10 @@ Rapidly create and securely share tiny calendars for real-time coordination and 
 Desktop/Laptop only (not mobile ready yet)
 
 ### Main tech used
-Vue.js, Vue Router, Vuetify
+**Vue.js**, Vue Router, Vuetify
 
-Node, Express
+**Node**, Express, Moment, uuid
 
-Moment and uuid
 ## Installation
 Note: The project is divided into a vue `frontend` folder and a node `backend` folder, each with their own package.json
 ### Prerequisites
