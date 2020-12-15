@@ -2,17 +2,17 @@
   <v-app>
     <v-app-bar app elevation="2">
       <v-spacer></v-spacer>
-        <NewCalendar class="ml-12 mr-12" />
-        <GetCalendar class="mt-6" />
+        <GetCalendar class="ml-12 mr-12 mt-7" />
+        <NewCalendar class="mt-1" />
       <v-spacer></v-spacer>
       <v-img src="@/assets/cloudDanceLogo.png"
-        class ="mr-12 mt-2"
+        class ="mr-12 mt-1"
         max-height="90%"
         max-width="20%" 
         contain
       />
       <a href="https://github.com/JoeFriedlander/cloudDance" title="github.com/JoeFriedlander/cloudDance">
-        <v-img src="@/assets/GitHub-Mark-32px.png" class="mt-2" contain />
+        <v-img src="@/assets/GitHub-Mark-32px.png" class="mt-1" contain />
       </a>
       <!-- <v-btn to="/">Home</v-btn>
       <v-btn to="/about">About</v-btn> -->
